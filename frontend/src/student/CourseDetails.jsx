@@ -9,24 +9,24 @@ import {
 } from "react-icons/fi";
 
 const levelColor = {
-  Beginner:     "text-emerald-700 bg-emerald-50 border-emerald-200",
-  Intermediate: "text-amber-700   bg-amber-50   border-amber-200",
-  Advanced:     "text-red-700     bg-red-50     border-red-200",
+  Beginner: "text-emerald-700 bg-emerald-50 border-emerald-200",
+  Intermediate: "text-amber-700 bg-amber-50 border-amber-200",
+  Advanced: "text-red-700 bg-red-50 border-red-200",
 };
 
 function CourseDetails() {
-  const { courseId }  = useParams();
-  const navigate      = useNavigate();
+  const { courseId } = useParams();
+  const navigate = useNavigate();
 
-  const [course, setCourse]       = useState(null);
-  const [loading, setLoading]      = useState(true);
-  const [isEnrolled, setIsEnrolled]   = useState(false);
-  const [enrolling, setEnrolling]    = useState(false);
+  const [course, setCourse] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isEnrolled, setIsEnrolled] = useState(false);
+  const [enrolling, setEnrolling] = useState(false);
   const [openSections, setOpenSections] = useState({});
-  const [hoverStar, setHoverStar]    = useState(0);
-  const [reviewForm, setReviewForm]   = useState({ rating: 0, review: "" });
-  const [submitting, setSubmitting]   = useState(false);
-  const [completed, setCompleted]     = useState({});
+  const [hoverStar, setHoverStar] = useState(0);
+  const [reviewForm, setReviewForm] = useState({ rating: 0, review: "" });
+  const [submitting, setSubmitting] = useState(false);
+  const [completed, setCompleted] = useState({});
   const user = JSON.parse(localStorage.getItem("user"));
 
 

@@ -34,15 +34,15 @@ function AdminAnalytics() {
     if (!stats) return [];
     return [
       { name: "Instructors", value: stats.instructors },
-      { name: "Students",    value: stats.students },
-      { name: "Admins",      value: stats.admins },
+      { name: "Students", value: stats.students },
+      { name: "Admins", value: stats.admins },
     ];
   }, [stats]);
 
   const userStatusData = useMemo(() => {
     if (!stats) return [];
     return [
-      { name: "Active",   value: stats.activeUsers },
+      { name: "Active", value: stats.activeUsers },
       { name: "Inactive", value: stats.inactiveUsers },
     ];
   }, [stats]);
@@ -50,7 +50,7 @@ function AdminAnalytics() {
   const courseStatusData = useMemo(() => {
     if (!stats) return [];
     return [
-      { name: "Active",   value: stats.activeCourses },
+      { name: "Active", value: stats.activeCourses },
       { name: "Inactive", value: stats.totalCourses - stats.activeCourses },
     ];
   }, [stats]);
@@ -58,9 +58,9 @@ function AdminAnalytics() {
   const radialData = useMemo(() => {
     if (!stats || !stats.totalUsers) return [];
     return [
-      { name: "Students",    value: ((stats.students / stats.totalUsers) * 100).toFixed(0),    fill: "#3b82f6" },
+      { name: "Students", value: ((stats.students / stats.totalUsers) * 100).toFixed(0),    fill: "#3b82f6" },
       { name: "Instructors", value: ((stats.instructors / stats.totalUsers) * 100).toFixed(0), fill: "#7c3aed" },
-      { name: "Admins",      value: ((stats.admins / stats.totalUsers) * 100).toFixed(0),      fill: "#ef4444" },
+      { name: "Admins", value: ((stats.admins / stats.totalUsers) * 100).toFixed(0),      fill: "#ef4444" },
     ];
   }, [stats]);
 
@@ -96,10 +96,10 @@ function AdminAnalytics() {
         {/* ── KPI CARDS ───────────────────────────── */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
           {[
-            { icon: <FiUsers />,     label: "Total Users",       val: stats?.totalUsers,       accent: "from-violet-500 to-indigo-500", shadow: "shadow-violet-200" },
-            { icon: <FiBookOpen />,  label: "Total Courses",     val: stats?.totalCourses,     accent: "from-blue-500 to-cyan-500",    shadow: "shadow-blue-200" },
-            { icon: <FiTrendingUp />,label: "Total Enrollments", val: stats?.totalEnrollments, accent: "from-emerald-500 to-teal-500", shadow: "shadow-emerald-200" },
-            { icon: <FiStar />,      label: "Avg. Rating",       val: stats?.avgRating,        accent: "from-amber-500 to-orange-500", shadow: "shadow-amber-200" },
+            { icon: <FiUsers />, label: "Total Users", val: stats?.totalUsers, accent: "from-violet-500 to-indigo-500", shadow: "shadow-violet-200" },
+            { icon: <FiBookOpen />, label: "Total Courses", val: stats?.totalCourses, accent: "from-blue-500 to-cyan-500", shadow: "shadow-blue-200" },
+            { icon: <FiTrendingUp />, label: "Total Enrollments", val: stats?.totalEnrollments, accent: "from-emerald-500 to-teal-500", shadow: "shadow-emerald-200" },
+            { icon: <FiStar />, label: "Avg. Rating", val: stats?.avgRating, accent: "from-amber-500 to-orange-500", shadow: "shadow-amber-200" },
           ].map(({ icon, label, val, accent, shadow }) => (
             <div key={label} className={`bg-gradient-to-br ${accent} p-5 rounded-2xl text-white shadow-lg ${shadow} hover:-translate-y-0.5 transition-transform`}>
               <div className="flex items-center justify-between mb-3">

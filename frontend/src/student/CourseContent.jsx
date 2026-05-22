@@ -22,25 +22,25 @@ const TABS = ["Overview", "Notes", "Reviews"];
 /* ─── Main Component ──────────────────────────────────── */
 export default function CourseContent() {
   const { courseId } = useParams();
-  const navigate     = useNavigate();
-  const videoRef        = useRef(null);
+  const navigate = useNavigate();
+  const videoRef = useRef(null);
   const videoWrapperRef = useRef(null);
 
-  const [course,         setCourse]         = useState(null);
-  const [loading,        setLoading]        = useState(true);
-  const [isEnrolled,     setIsEnrolled]     = useState(false);
-  const [activeLecture,  setActiveLecture]  = useState(null);  // { sectionIdx, lectureIdx }
-  const [completed,      setCompleted]      = useState({});
-  const [sidebarOpen,    setSidebarOpen]    = useState(true);
-  const [openSections,   setOpenSections]   = useState({});
-  const [tab,            setTab]            = useState("Overview");
-  const [note,           setNote]           = useState("");
-  const [notes,          setNotes]          = useState(() => {
+  const [course, setCourse] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isEnrolled, setIsEnrolled] = useState(false);
+  const [activeLecture, setActiveLecture] = useState(null);  // { sectionIdx, lectureIdx }
+  const [completed, setCompleted] = useState({});
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [openSections, setOpenSections] = useState({});
+  const [tab, setTab] = useState("Overview");
+  const [note, setNote] = useState("");
+  const [notes, setNotes] = useState(() => {
     try { return JSON.parse(localStorage.getItem(`notes_${courseId}`)) || []; } catch { return []; }
   });
-  const [videoError,     setVideoError]     = useState(false);
-  const [videoLoading,   setVideoLoading]   = useState(false);
-  const [retryKey,       setRetryKey]       = useState(0);
+  const [videoError, setVideoError] = useState(false);
+  const [videoLoading, setVideoLoading] = useState(false);
+  const [retryKey, setRetryKey] = useState(0);
 
   /* Fetch course + enrollment check */
   useEffect(() => {
@@ -50,9 +50,9 @@ export default function CourseContent() {
           axiosInstance.get(`/user-api/course/${courseId}`),
           axiosInstance.get("/user-api/my-courses"),
         ]);
-        const data         = courseRes.data.payload;
+        const data = courseRes.data.payload;
         const enrolledList = enrolledRes.data.payload || [];
-        const enrolled     = enrolledList.some(c => c._id === courseId);
+        const enrolled = enrolledList.some(c => c._id === courseId);
 
         setCourse(data);
         setIsEnrolled(enrolled);
@@ -185,10 +185,10 @@ export default function CourseContent() {
   const saveNote = () => {
     if (!note.trim()) return;
     const entry = {
-      id:           Date.now(),
-      text:         note.trim(),
+      id: Date.now(),
+      text: note.trim(),
       lectureTitle: currentLecture?.title || "",
-      createdAt:    new Date().toISOString()
+      createdAt: new Date().toISOString()
     };
     setNotes(prev => [entry, ...prev]);
     setNote("");
@@ -196,9 +196,9 @@ export default function CourseContent() {
   };
 
   /* Progress % */
-  const totalLectures    = allLectures.length;
-  const completedCount   = allLectures.filter(a => completed[a.lecture._id]).length;
-  const progressPct      = totalLectures > 0 ? Math.round((completedCount / totalLectures) * 100) : 0;
+  const totalLectures = allLectures.length;
+  const completedCount = allLectures.filter(a => completed[a.lecture._id]).length;
+  const progressPct = totalLectures > 0 ? Math.round((completedCount / totalLectures) * 100) : 0;
 
   /* ─── Loading / Not found ─── */
   if (loading) {
