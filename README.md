@@ -1,4 +1,4 @@
-# 📚 CourseHub — Online Learning Platform
+#  CourseHub — Online Learning Platform
 
 A full-stack online learning platform where **Instructors** publish video courses, **Students** enroll and learn, and **Admins** manage everything from a dashboard.
 
@@ -11,7 +11,7 @@ A full-stack online learning platform where **Instructors** publish video course
 
 ---
 
-## 🧰 Tech Stack
+##  Tech Stack
 
 | Area      | Technologies |
 |-----------|-------------|
@@ -23,7 +23,7 @@ A full-stack online learning platform where **Instructors** publish video course
 
 ---
 
-## 📁 Folder Structure
+##  Folder Structure
 
 ```
 Online-Learning-Platform/
@@ -64,7 +64,7 @@ Online-Learning-Platform/
 
 ---
 
-## 👤 User Roles & What They Can Do
+##  User Roles & What They Can Do
 
 ### 🎓 Student
 - Register and log in
@@ -78,7 +78,7 @@ Online-Learning-Platform/
 - Take personal notes per lecture (saved in browser)
 - View profile with enrolled courses and stats
 
-### 🧑‍🏫 Instructor
+###  Instructor
 - Register and log in as Instructor
 - Create new courses (title, description, category, level, price, thumbnail image)
 - Edit existing courses (update details, add/remove sections and lectures)
@@ -90,7 +90,7 @@ Online-Learning-Platform/
 - Browse the full platform catalog to see what other instructors have published
 - Manage profile
 
-### 🛡️ Admin
+###  Admin
 - View a master dashboard with platform-wide stats
 - Manage all users (view, activate/deactivate accounts)
 - Manage all courses (view, activate/deactivate courses)
@@ -99,7 +99,7 @@ Online-Learning-Platform/
 
 ---
 
-## 🔧 How It Works — Step by Step
+##  How It Works — Step by Step
 
 ### Authentication Flow
 1. User goes to `/register` → fills the form → backend hashes the password with bcrypt → saves to MongoDB
@@ -149,7 +149,7 @@ Online-Learning-Platform/
 
 ---
 
-## 🗄️ Database Models
+##  Database Models
 
 ### User
 | Field           | Type     | Notes |
@@ -201,7 +201,7 @@ Online-Learning-Platform/
 
 ---
 
-## 🌐 API Routes Overview
+## API Routes Overview
 
 ### Common API (`/common-api`)
 | Method | Endpoint    | Description |
@@ -249,7 +249,7 @@ Online-Learning-Platform/
 
 ---
 
-## 🚀 How to Run Locally
+##  How to Run Locally
 
 ### Prerequisites
 - Node.js (v18+)
@@ -318,7 +318,7 @@ The app runs on `http://localhost:5173`.
 
 ---
 
-## 📝 Key Design Decisions
+## Key Design Decisions
 
 1. **Cookie-based auth over token headers** — JWT is stored in an httpOnly cookie (not localStorage) to prevent XSS attacks
 2. **Direct-to-Cloudinary video upload** — Videos upload from the browser directly to Cloudinary using signed requests, avoiding backend timeouts on Render's free tier
