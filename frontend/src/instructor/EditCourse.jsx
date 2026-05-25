@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { axiosInstance } from "../api/axiosInstance";
+import axios from "axios";
 import { toast } from "react-hot-toast";
 import { FiArrowLeft, FiSave, FiPlus, FiTrash2, FiVideo, FiLayers, FiInfo, FiChevronDown, FiChevronUp } from "react-icons/fi";
 
@@ -123,37 +124,28 @@ export default function EditCourse() {
       const sigRes = await axiosInstance.get("/instructor-api/generate-upload-signature");
       const { signature, timestamp, folder, cloudName, apiKey } = sigRes.data;
 
-      // Step 2: upload directly from browser to Cloudinary via XHR (so we get progress events)
-      const videoUrl = await new Promise((resolve, reject) => {
-        const fd = new FormData();
-        fd.append("file", videoFile);
-        fd.append("api_key", apiKey);
-        fd.append("timestamp", timestamp);
-        fd.append("signature", signature);
-        fd.append("folder", folder);
-        fd.append("resource_type", "video");
+      // Step 2: upload directly from browser to Cloudinary using axios
+      const fd = new FormData();
+      fd.append("file", videoFile);
+      fd.append("api_key", apiKey);
+      fd.append("timestamp", timestamp);
+      fd.append("signature", signature);
+      fd.append("folder", folder);
+      fd.append("resource_type", "video");
 
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`);
-
-        xhr.upload.onprogress = (e) => {
-          if (e.lengthComputable) {
-            const pct = Math.round((e.loaded / e.total) * 100);
-            setUploadProgress(prev => ({ ...prev, [sectionId]: pct }));
+      const cloudinaryRes = await axios.post(
+        `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`,
+        fd,
+        {
+          onUploadProgress: (e) => {
+            if (e.total) {
+              const pct = Math.round((e.loaded / e.total) * 100);
+              setUploadProgress(prev => ({ ...prev, [sectionId]: pct }));
+            }
           }
-        };
-
-        xhr.onload = () => {
-          if (xhr.status === 200) {
-            const data = JSON.parse(xhr.responseText);
-            resolve(data.secure_url);
-          } else {
-            reject(new Error("Cloudinary upload failed"));
-          }
-        };
-        xhr.onerror = () => reject(new Error("Network error during upload"));
-        xhr.send(fd);
-      });
+        }
+      );
+      const videoUrl = cloudinaryRes.data.secure_url;
 
       // Step 3: save lecture with the returned URL into our DB
       const res = await axiosInstance.post(
