@@ -66,7 +66,7 @@ Online-Learning-Platform/
 
 ##  User Roles & What They Can Do
 
-### 🎓 Student
+###  Student
 - Register and log in
 - Browse all available courses (filter by level, category, search)
 - View course details (description, sections, lectures, reviews, pricing)
