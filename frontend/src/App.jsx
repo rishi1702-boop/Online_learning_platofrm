@@ -26,6 +26,7 @@ import AllCourses from "./student/AllCourses"
 import CourseDetails from "./student/CourseDetails"
 import CourseContent from "./student/CourseContent"
 import Checkout from "./student/Checkout"
+import LearningPaths from "./student/LearningPaths"
 
 function App() {
   return (
@@ -64,6 +65,12 @@ function App() {
           <Route path="all-courses" element={
             <ProtectedRoute allowedRoles={["STUDENT"]}>
               <AllCourses />
+            </ProtectedRoute>
+          } />
+
+          <Route path="learning-paths" element={
+            <ProtectedRoute allowedRoles={["STUDENT"]}>
+              <LearningPaths />
             </ProtectedRoute>
           } />
 

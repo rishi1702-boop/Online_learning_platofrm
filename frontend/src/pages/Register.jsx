@@ -7,7 +7,6 @@ import {
   FiUser, FiMail, FiLock, FiEye, FiEyeOff,
   FiBookOpen, FiAward, FiUsers, FiShield, FiKey,
 } from "react-icons/fi";
-import { FcGoogle } from "react-icons/fc";
 
 // ─── Secret admin key (change this to match your backend config) ──
 const ADMIN_SECRET_KEY = "COURSEHUB_ADMIN_2024";
@@ -152,27 +151,6 @@ function Register() {
             <h1 className="text-4xl font-bold text-violet-600">Create account</h1>
             <p className="mt-2 text-slate-500">Start your journey on CourseHub today</p>
           </div>
-
-          {/* Google signup — hidden for admin */}
-          {selectedRole !== "ADMIN" && (
-            <>
-              <button
-                type="button"
-                className="mb-5 flex w-full items-center justify-center gap-3 rounded-xl border border-[#e2e8f0] py-3 font-medium text-[#475569] transition hover:bg-[#f1f5f9]"
-              >
-                <FcGoogle size={22} />
-                Sign up with Google
-              </button>
-              <div className="relative mb-5 text-center">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-[#e2e8f0]" />
-                </div>
-                <span className="relative bg-white px-4 text-sm text-[#94a3b8]">
-                  or register with email
-                </span>
-              </div>
-            </>
-          )}
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 

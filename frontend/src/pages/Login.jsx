@@ -4,7 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { axiosInstance } from "../api/axiosInstance";
 import { toast } from "react-hot-toast";
 import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
-import { FcGoogle } from "react-icons/fc";
 
 function Login() {
   const navigate = useNavigate();
@@ -56,18 +55,6 @@ function Login() {
           <div className="mb-10 text-center lg:text-left">
             <h1 className="text-4xl font-bold text-violet-700 mb-3">Welcome Back</h1>
             <p className="text-slate-500">Enter your credentials to access your account</p>
-          </div>
-
-          <button className="w-full flex items-center justify-center gap-3 py-3 border border-[#e2e8f0] rounded-xl hover:bg-[#f1f5f9] transition-all duration-300 mb-8 font-medium text-[#475569]">
-            <FcGoogle size={22} />
-            Sign in with Google
-          </button>
-
-          <div className="relative mb-8 text-center">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-[#e2e8f0]"></div>
-            </div>
-            <span className="relative px-4 bg-white text-[#94a3b8] text-sm">or login with email</span>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function HeroSlider() {
   return (
     <section className="relative overflow-hidden rounded-3xl border border-[#dfe1e8] bg-linear-to-br from-[#fff5f7] via-[#f6f9ff] to-[#eef8f7] p-8 lg:p-14">
@@ -18,12 +20,12 @@ function HeroSlider() {
           </p>
 
           <div className="mt-7 flex flex-wrap gap-3">
-            <button className="rounded bg-[#1c1d1f] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#0b0c0d]">
+            <Link to="/all-courses" className="rounded bg-[#1c1d1f] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#0b0c0d] text-center">
               Explore courses
-            </button>
-            <button className="rounded border border-[#1c1d1f] px-5 py-3 text-sm font-bold text-[#1c1d1f] transition hover:bg-white">
+            </Link>
+            <Link to="/learning-paths" className="rounded border border-[#1c1d1f] px-5 py-3 text-sm font-bold text-[#1c1d1f] transition hover:bg-white text-center">
               View learning paths
-            </button>
+            </Link>
           </div>
 
           <div className="mt-8 flex flex-wrap items-center gap-6 text-sm text-[#4d5156]">
