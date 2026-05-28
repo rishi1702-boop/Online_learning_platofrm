@@ -276,6 +276,21 @@ function CourseCard({ course, enrolled, levelColor, onEnroll, enrollingId }) {
           <span className="flex items-center gap-1"><FiStar size={12} /> {course.rating > 0 ? course.rating.toFixed(1) : "New"}</span>
           <span className="flex items-center gap-1"><FiClock size={12} /> {course.studentsEnrolled} students</span>
         </div>
+        {/* Pricing info for unenrolled courses */}
+        {!enrolled && (
+          <div className="flex items-center justify-between mb-3 text-xs text-slate-500">
+            <span>Price</span>
+            {course.price > 0 ? (
+              <div className="flex items-baseline gap-1.5 font-bold">
+                <span className="text-slate-800 text-sm font-extrabold">₹{course.price}</span>
+                <span className="text-slate-400 line-through text-[10px]">₹{Math.round(course.price * 1.25)}</span>
+              </div>
+            ) : (
+              <span className="text-emerald-600 font-bold">Free</span>
+            )}
+          </div>
+        )}
+
         {enrolled ? (
           <Link
             to={`/course/${course._id}`}
@@ -283,13 +298,20 @@ function CourseCard({ course, enrolled, levelColor, onEnroll, enrollingId }) {
           >
             <FiPlay size={14} /> Continue Learning
           </Link>
+        ) : course.price > 0 ? (
+          <Link
+            to={`/course/${course._id}`}
+            className="w-full py-2.5 rounded-xl border-2 border-violet-500 text-violet-600 text-sm font-bold text-center flex items-center justify-center gap-2 hover:bg-violet-600 hover:text-white transition"
+          >
+            Buy - ₹{course.price}
+          </Link>
         ) : (
           <button
             onClick={() => onEnroll && onEnroll(course._id)}
             disabled={enrollingId === course._id}
             className="w-full py-2.5 rounded-xl border-2 border-violet-500 text-violet-600 text-sm font-bold hover:bg-violet-600 hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {enrollingId === course._id ? "Enrolling..." : "Enroll Now"}
+            {enrollingId === course._id ? "Enrolling..." : "Enroll Free"}
           </button>
         )}
       </div>
