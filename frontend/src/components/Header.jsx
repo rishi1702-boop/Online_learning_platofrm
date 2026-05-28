@@ -1,6 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { FiUser } from "react-icons/fi";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -138,21 +137,6 @@ function Navbar() {
               >
                 Reviews
               </NavLink>
-              <NavLink
-                to="/instructor-profile"
-                className={({ isActive }) =>
-                  `flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm font-semibold transition ${
-                    isActive
-                      ? "bg-blue-100 text-blue-700"
-                      : "text-gray-700 hover:bg-blue-50 hover:text-blue-700"
-                  }`
-                }
-              >
-                <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-500 flex items-center justify-center text-white">
-                  <FiUser size={12} />
-                </div>
-                <span className="hidden sm:block">My Profile</span>
-              </NavLink>
             </>
           )}
 
@@ -196,7 +180,7 @@ function Navbar() {
           ) : (
             <div className="flex items-center gap-3">
               <NavLink
-                to="/profile"
+                to={user.role === "INSTRUCTOR" ? "/instructor-profile" : "/profile"}
                 title={`${user.firstName} ${user.lastName}`}
                 className={({ isActive }) =>
                   `flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm font-semibold transition ${
