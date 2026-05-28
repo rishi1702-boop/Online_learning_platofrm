@@ -3,6 +3,7 @@ import { User } from "../models/User.js";
 import { Course } from "../models/Course.js";
 import { verifyToken } from "../middlewares/verifyToken.js";
 import { CourseProgress } from "../models/CourseProgress.js";
+import bcrypt from "bcrypt";
 
 export const userRouter = express.Router();
 
@@ -21,6 +22,67 @@ userRouter.get('/profile', async (req, res) => {
         }
         
         res.status(200).json({ message: "User profile fetched successfully", payload: user });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Update Profile (firstName, lastName)
+userRouter.patch('/update-profile', async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const { firstName, lastName } = req.body;
+
+        if (!firstName?.trim() || !lastName?.trim()) {
+            return res.status(400).json({ message: "First name and last name are required" });
+        }
+
+        const updated = await User.findByIdAndUpdate(
+            userId,
+            { firstName: firstName.trim(), lastName: lastName.trim() },
+            { new: true }
+        ).select('-password');
+
+        if (!updated) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({ message: "Profile updated successfully", payload: updated });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Change Password
+userRouter.patch('/change-password', async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const { currentPassword, newPassword } = req.body;
+
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ message: "Current and new password are required" });
+        }
+
+        if (newPassword.length < 6) {
+            return res.status(400).json({ message: "New password must be at least 6 characters" });
+        }
+
+        // Fetch user WITH password for verification
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: "Current password is incorrect" });
+        }
+
+        const hashed = await bcrypt.hash(newPassword, 10);
+        user.password = hashed;
+        await user.save();
+
+        res.status(200).json({ message: "Password changed successfully" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

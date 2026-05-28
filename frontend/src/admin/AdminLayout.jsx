@@ -1,25 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { axiosInstance } from "../api/axiosInstance";
 import {
   FiHome, FiUsers, FiBookOpen, FiBarChart2,
-  FiSettings, FiLogOut, FiShield, FiMenu, FiX, FiChevronDown,
+  FiSettings, FiLogOut, FiShield, FiMenu, FiX, FiChevronDown, FiMail, FiBell,
 } from "react-icons/fi";
 
 const NAV_ITEMS = [
-  { icon: FiHome,      label: "Overview",  path: "/admin-dashboard" },
-  { icon: FiUsers,     label: "Users",     path: "/admin/users" },
-  { icon: FiBookOpen,  label: "Courses",   path: "/admin/courses" },
+  { icon: FiHome, label: "Overview", path: "/admin-dashboard" },
+  { icon: FiUsers, label: "Users", path: "/admin/users" },
+  { icon: FiBookOpen, label: "Courses", path: "/admin/courses" },
+  { icon: FiMail, label: "Appeals", path: "/admin/appeals" },
   { icon: FiBarChart2, label: "Analytics", path: "/admin/analytics" },
-  { icon: FiSettings,  label: "Settings",  path: "/admin/settings" },
+  { icon: FiSettings, label: "Settings", path: "/admin/settings" },
 ];
 
 function AdminLayout({ children }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const user     = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-  const [mobileOpen,   setMobileOpen]   = useState(false);
-  const [profileOpen,  setProfileOpen]  = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [pendingAppeals, setPendingAppeals] = useState(0);
+
+  useEffect(() => {
+    axiosInstance.get("/admin-api/appeals?status=pending")
+      .then((res) => setPendingAppeals((res.data.payload || []).length))
+      .catch(() => {});
+  }, [location.pathname]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -72,6 +81,11 @@ function AdminLayout({ children }) {
                   >
                     <Icon size={15} className="shrink-0" />
                     {label}
+                    {label === "Appeals" && pendingAppeals > 0 && (
+                      <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none">
+                        {pendingAppeals}
+                      </span>
+                    )}
                     {isActive && (
                       <span className="w-1 h-1 rounded-full bg-white/70 ml-0.5" />
                     )}

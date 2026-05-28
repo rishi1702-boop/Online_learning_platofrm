@@ -7,8 +7,7 @@ import {
   FiArrowRight, FiRefreshCw, FiBarChart2
 } from "react-icons/fi";
 import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, PieChart, Pie, Cell, Legend
+  ResponsiveContainer, PieChart, Pie, Cell, Legend, Tooltip
 } from "recharts";
 import AdminLayout from "./AdminLayout";
 
@@ -32,16 +31,63 @@ const StatCard = ({ title, value, sub, icon, color, iconBg, link }) => (
   </div>
 );
 
+const PlatformScore = ({ stats }) => {
+  if (!stats) return null;
+  const userAct   = stats.totalUsers    ? Math.round((stats.activeUsers  / stats.totalUsers)    * 100) : 0;
+  const courseAct = stats.totalCourses  ? Math.round((stats.activeCourses / stats.totalCourses) * 100) : 0;
+  const ratingPct = stats.avgRating     ? Math.round((parseFloat(stats.avgRating) / 5)          * 100) : 0;
+  const enrolDen  = stats.totalCourses  ? Math.min(Math.round((stats.totalEnrollments / (stats.totalCourses * 10)) * 100), 100) : 0;
+  const score     = Math.round((userAct + courseAct + ratingPct + enrolDen) / 4);
+  const color     = score >= 70 ? "text-emerald-600 bg-emerald-50 border-emerald-200"
+                  : score >= 45 ? "text-amber-600 bg-amber-50 border-amber-200"
+                  :               "text-rose-600 bg-rose-50 border-rose-200";
+  const label     = score >= 70 ? "Healthy" : score >= 45 ? "Fair" : "Needs Attention";
+  return (
+    <div className={`flex flex-col items-center px-4 py-2 rounded-xl border font-bold ${color}`}>
+      <span className="text-2xl">{score}%</span>
+      <span className="text-xs font-semibold">{label}</span>
+    </div>
+  );
+};
+
+const HealthMetric = ({ label, desc, pct, color, good }) => {
+  const barColor  = pct >= good         ? color
+                  : pct >= good * 0.6   ? "bg-amber-400"
+                  :                       "bg-rose-500";
+  const textColor = pct >= good         ? "text-emerald-600"
+                  : pct >= good * 0.6   ? "text-amber-600"
+                  :                       "text-rose-600";
+  return (
+    <div className="bg-slate-50 rounded-xl p-4">
+      <div className="flex justify-between items-start mb-2">
+        <div>
+          <p className="text-sm font-semibold text-slate-700">{label}</p>
+          <p className="text-xs text-slate-400 mt-0.5">{desc}</p>
+        </div>
+        <span className={`text-lg font-black ${textColor}`}>{pct}%</span>
+      </div>
+      <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+        <div className={`h-full ${barColor} rounded-full transition-all duration-500`} style={{ width: `${pct}%` }} />
+      </div>
+    </div>
+  );
+};
+
 function AdminOverview() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const [stats, setStats] = useState(null);
+  const [stats,   setStats]   = useState(null);
+  const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchStats = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await axiosInstance.get("/admin-api/stats");
-      setStats(res.data.payload);
+      const [statsRes, coursesRes] = await Promise.all([
+        axiosInstance.get("/admin-api/stats"),
+        axiosInstance.get("/admin-api/courses")
+      ]);
+      setStats(statsRes.data.payload);
+      setCourses(coursesRes.data.payload || []);
     } catch (err) {
       console.error("Stats fetch error:", err);
     } finally {
@@ -134,34 +180,78 @@ function AdminOverview() {
 
         {/* ── CHARTS ─────────────────────────────── */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* User Signups Area Chart */}
+          {/* Platform Health Scorecard */}
           <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h3 className="font-bold text-lg text-slate-800">User Signups</h3>
-                <p className="text-xs text-slate-400 mt-0.5">New registrations over time</p>
+                <h3 className="font-bold text-lg text-slate-800">Platform Health Scorecard</h3>
+                <p className="text-xs text-slate-400 mt-0.5">Key indicators across users, courses & engagement</p>
               </div>
-              <span className="text-xs text-slate-400 bg-slate-50 px-3 py-1.5 rounded-lg">Last 6 months</span>
+              <PlatformScore stats={stats} />
             </div>
-            <div className="h-[280px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={stats?.monthlySignups || []}>
-                  <defs>
-                    <linearGradient id="colorSignups" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%"  stopColor="#7c3aed" stopOpacity={0.15} />
-                      <stop offset="95%" stopColor="#7c3aed" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: "#94A3B8", fontSize: 12 }} dy={10} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fill: "#94A3B8", fontSize: 12 }} allowDecimals={false} />
-                  <Tooltip
-                    contentStyle={{ borderRadius: "12px", border: "none", boxShadow: "0 10px 25px -5px rgba(0,0,0,0.12)" }}
-                    labelStyle={{ fontWeight: 700 }}
-                  />
-                  <Area type="monotone" dataKey="users" stroke="#7c3aed" strokeWidth={3} fillOpacity={1} fill="url(#colorSignups)" />
-                </AreaChart>
-              </ResponsiveContainer>
+
+            <div className="grid grid-cols-2 gap-4 mb-5">
+              <HealthMetric
+                label="User Activation"
+                desc="Active / total users"
+                pct={stats?.totalUsers ? Math.round((stats.activeUsers / stats.totalUsers) * 100) : 0}
+                color="bg-violet-500"
+                good={70}
+              />
+              <HealthMetric
+                label="Course Activation"
+                desc="Active / total courses"
+                pct={stats?.totalCourses ? Math.round((stats.activeCourses / stats.totalCourses) * 100) : 0}
+                color="bg-blue-500"
+                good={80}
+              />
+              <HealthMetric
+                label="Rating Health"
+                desc={`Avg ${stats?.avgRating ?? 0} / 5 stars`}
+                pct={stats?.avgRating ? Math.round((parseFloat(stats.avgRating) / 5) * 100) : 0}
+                color="bg-amber-500"
+                good={70}
+              />
+              <HealthMetric
+                label="Enrollment Density"
+                desc={`${stats?.totalEnrollments ?? 0} enrols across ${stats?.totalCourses ?? 0} courses`}
+                pct={stats?.totalCourses ? Math.min(Math.round((stats.totalEnrollments / (stats.totalCourses * 10)) * 100), 100) : 0}
+                color="bg-emerald-500"
+                good={60}
+              />
+            </div>
+
+            {/* Top Courses Activity */}
+            <div>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Most Enrolled Courses</p>
+              <div className="space-y-2">
+                {[...courses]
+                  .sort((a, b) => (b.studentsEnrolled || 0) - (a.studentsEnrolled || 0))
+                  .slice(0, 3)
+                  .map((course, i) => {
+                    const rankColors = ["text-amber-500", "text-slate-400", "text-orange-700"];
+                    return (
+                      <div key={course._id} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
+                        <span className={`text-sm font-black ${rankColors[i]}`}>#{i + 1}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-slate-700 truncate">{course.title}</p>
+                          <p className="text-xs text-slate-400">{course.category} · {course.courseLevel}</p>
+                        </div>
+                        <div className="flex items-center gap-3 text-xs flex-shrink-0">
+                          <span className="text-amber-500 font-bold flex items-center gap-1">
+                            <FiStar size={11} /> {course.rating?.toFixed(1) || "—"}
+                          </span>
+                          <span className="bg-violet-100 text-violet-700 font-bold px-2 py-0.5 rounded-lg">
+                            {course.studentsEnrolled || 0} students
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                {courses.length === 0 && (
+                  <p className="text-sm text-slate-400 text-center py-4">No courses yet</p>
+                )}
+              </div>
             </div>
           </div>
 

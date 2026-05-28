@@ -12,9 +12,9 @@ import AdminLayout from "./AdminLayout";
 
 const RoleBadge = ({ role }) => {
   const map = {
-    ADMIN:      "bg-red-50 text-red-600 border-red-200",
+    ADMIN: "bg-red-50 text-red-600 border-red-200",
     INSTRUCTOR: "bg-purple-50 text-purple-600 border-purple-200",
-    STUDENT:    "bg-blue-50 text-blue-600 border-blue-200",
+    STUDENT: "bg-blue-50 text-blue-600 border-blue-200",
   };
   return (
     <span className={`text-xs font-bold px-2.5 py-1 rounded-full border ${map[role] || "bg-slate-50 text-slate-500 border-slate-200"}`}>
@@ -71,14 +71,14 @@ const ConfirmModal = ({ isOpen, title, message, onConfirm, onCancel, loading }) 
 function AdminUsers() {
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
 
-  const [users, setUsers]             = useState([]);
-  const [loading, setLoading]         = useState(true);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
-  const [search, setSearch]           = useState("");
-  const [roleFilter, setRoleFilter]   = useState("ALL");
+  const [search, setSearch] = useState("");
+  const [roleFilter, setRoleFilter] = useState("ALL");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [confirmModal, setConfirmModal] = useState({ open: false, title: "", message: "", action: null });
-  const [viewMode, setViewMode]       = useState("table"); // "table" | "cards"
+  const [viewMode, setViewMode] = useState("table"); // "table" | "cards"
 
   const fetchUsers = useCallback(async () => {
     try {
@@ -138,11 +138,11 @@ function AdminUsers() {
 
   // Summary counts
   const counts = useMemo(() => ({
-    total:       users.length,
-    students:    users.filter(u => u.role === "STUDENT").length,
+    total: users.length,
+    students: users.filter(u => u.role === "STUDENT").length,
     instructors: users.filter(u => u.role === "INSTRUCTOR").length,
-    admins:      users.filter(u => u.role === "ADMIN").length,
-    active:      users.filter(u => u.isActive).length,
+    admins: users.filter(u => u.role === "ADMIN").length,
+    active: users.filter(u => u.isActive).length,
   }), [users]);
 
   if (loading) {
@@ -189,11 +189,11 @@ function AdminUsers() {
         {/* Summary Tiles */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
           {[
-            { label: "Total", val: counts.total,       bg: "bg-slate-50",    text: "text-slate-700" },
-            { label: "Students",    val: counts.students,    bg: "bg-blue-50",     text: "text-blue-700" },
-            { label: "Instructors", val: counts.instructors, bg: "bg-violet-50",   text: "text-violet-700" },
-            { label: "Admins",      val: counts.admins,      bg: "bg-red-50",      text: "text-red-700" },
-            { label: "Active",      val: counts.active,      bg: "bg-emerald-50",  text: "text-emerald-700" },
+            { label: "Total", val: counts.total, bg: "bg-slate-50", text: "text-slate-700" },
+            { label: "Students", val: counts.students, bg: "bg-blue-50", text: "text-blue-700" },
+            { label: "Instructors", val: counts.instructors, bg: "bg-violet-50", text: "text-violet-700" },
+            { label: "Admins", val: counts.admins, bg: "bg-red-50", text: "text-red-700" },
+            { label: "Active", val: counts.active, bg: "bg-emerald-50", text: "text-emerald-700" },
           ].map(({ label, val, bg, text }) => (
             <div key={label} className={`${bg} rounded-xl p-4 text-center border border-white shadow-sm`}>
               <p className={`text-2xl font-bold ${text}`}>{val}</p>

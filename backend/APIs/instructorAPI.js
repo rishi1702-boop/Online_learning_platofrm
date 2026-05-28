@@ -1,6 +1,7 @@
 import express from "express";
 import { User } from "../models/User.js";
 import { Course } from "../models/Course.js";
+import { Appeal } from "../models/Appeal.js";
 import { verifyToken, authorizeRole } from "../middlewares/verifyToken.js";
 import { upload } from "../middlewares/multer.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
@@ -82,7 +83,7 @@ instructorRouter.post("/create-course", upload.single("thumbnail"), async (req, 
 
 
 
-//   GET ALL COURSES OF INSTRUCTOR
+// GET ALL COURSES OF INSTRUCTOR
 
 instructorRouter.get("/my-courses", async (req, res) => {
   try {
@@ -101,6 +102,61 @@ instructorRouter.get("/my-courses", async (req, res) => {
 
   } catch (error) {
     res.status(500).json({ message: "Error fetching courses", error });
+  }
+});
+
+
+// SUBMIT APPEAL FOR AN INACTIVE COURSE (one-time only)
+
+instructorRouter.post("/appeal/:courseId", async (req, res) => {
+  try {
+    const instructorId = req.user._id;
+    const { courseId } = req.params;
+    const { message } = req.body;
+
+    if (!message || message.trim().length < 50) {
+      return res.status(400).json({ message: "Appeal message must be at least 50 characters" });
+    }
+
+    const course = await Course.findById(courseId);
+    if (!course) return res.status(404).json({ message: "Course not found" });
+    if (course.instructor.toString() !== instructorId.toString()) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+    if (course.isActive) {
+      return res.status(400).json({ message: "Course is already active. Appeals are only for inactive courses." });
+    }
+
+    // Enforce one-appeal-per-course rule
+    const existing = await Appeal.findOne({ course: courseId });
+    if (existing) {
+      return res.status(400).json({ message: "An appeal has already been submitted for this course. You only get one chance." });
+    }
+
+    const appeal = await Appeal.create({
+      course: courseId,
+      instructor: instructorId,
+      message: message.trim(),
+    });
+
+    res.status(201).json({ message: "Appeal submitted successfully", payload: appeal });
+  } catch (error) {
+    res.status(500).json({ message: "Error submitting appeal", error: error.message });
+  }
+});
+
+
+// GET MY APPEALS (instructor sees their own appeals + status)
+
+instructorRouter.get("/my-appeals", async (req, res) => {
+  try {
+    const instructorId = req.user._id;
+    const appeals = await Appeal.find({ instructor: instructorId })
+      .populate("course", "title thumbnail isActive")
+      .sort({ createdAt: -1 });
+    res.json({ message: "Appeals fetched", payload: appeals });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching appeals", error: error.message });
   }
 });
 

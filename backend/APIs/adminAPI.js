@@ -1,6 +1,7 @@
 import express from 'express';
 import { User } from '../models/User.js';
 import { Course } from '../models/Course.js';
+import { Appeal } from '../models/Appeal.js';
 import { verifyToken, authorizeRole } from '../middlewares/verifyToken.js';
 
 export const adminRouter = express.Router();
@@ -178,5 +179,68 @@ adminRouter.get("/stats", async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({ message: "Error fetching stats", error: error.message });
+    }
+});
+
+
+// GET ALL APPEALS (Admin view)
+
+adminRouter.get("/appeals", async (req, res) => {
+    try {
+        const { status } = req.query;
+        const filter = status ? { status } : {};
+        const appeals = await Appeal.find(filter)
+            .populate("course", "title thumbnail isActive category")
+            .populate("instructor", "firstName lastName email")
+            .sort({ createdAt: -1 });
+        res.json({ message: "Appeals fetched successfully", payload: appeals });
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching appeals", error: error.message });
+    }
+});
+
+
+// APPROVE APPEAL (reactivates the course)
+
+adminRouter.patch("/appeals/:appealId/approve", async (req, res) => {
+    try {
+        const { appealId } = req.params;
+
+        const appeal = await Appeal.findById(appealId).populate("course");
+        if (!appeal) return res.status(404).json({ message: "Appeal not found" });
+        if (appeal.status !== "pending") {
+            return res.status(400).json({ message: "This appeal has already been reviewed" });
+        }
+
+        // Approve appeal and reactivate course atomically
+        await Promise.all([
+            Appeal.findByIdAndUpdate(appealId, { status: "approved" }),
+            Course.findByIdAndUpdate(appeal.course._id, { isActive: true }),
+        ]);
+
+        res.json({ message: "Appeal approved. Course has been reactivated." });
+    } catch (error) {
+        res.status(500).json({ message: "Error approving appeal", error: error.message });
+    }
+});
+
+
+// REJECT APPEAL (course stays inactive)
+
+adminRouter.patch("/appeals/:appealId/reject", async (req, res) => {
+    try {
+        const { appealId } = req.params;
+
+        const appeal = await Appeal.findById(appealId);
+        if (!appeal) return res.status(404).json({ message: "Appeal not found" });
+        if (appeal.status !== "pending") {
+            return res.status(400).json({ message: "This appeal has already been reviewed" });
+        }
+
+        await Appeal.findByIdAndUpdate(appealId, { status: "rejected" });
+
+        res.json({ message: "Appeal rejected. Course remains inactive." });
+    } catch (error) {
+        res.status(500).json({ message: "Error rejecting appeal", error: error.message });
     }
 });

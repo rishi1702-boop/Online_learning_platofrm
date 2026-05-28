@@ -19,6 +19,7 @@ import AdminUsers from "./admin/AdminUsers"
 import AdminCourses from "./admin/AdminCourses"
 import AdminAnalytics from "./admin/AdminAnalytics"
 import AdminSettings from "./admin/AdminSettings"
+import AdminAppeals from "./admin/AdminAppeals"
 import StudentProfile from "./student/StudentProfile"
 import ProtectedRoute from "./routes/ProtectedRoute"
 import PublicRoute from "./routes/PublicRoute"
@@ -170,6 +171,12 @@ function App() {
           <Route path="admin/settings" element={
             <ProtectedRoute allowedRoles={["ADMIN"]}>
               <AdminSettings />
+            </ProtectedRoute>
+          } />
+
+          <Route path="admin/appeals" element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <AdminAppeals />
             </ProtectedRoute>
           } />
 

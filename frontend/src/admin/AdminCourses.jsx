@@ -12,9 +12,9 @@ import AdminLayout from "./AdminLayout";
 
 const LevelBadge = ({ level }) => {
   const map = {
-    Beginner:     "bg-emerald-50 text-emerald-600 border-emerald-200",
+    Beginner: "bg-emerald-50 text-emerald-600 border-emerald-200",
     Intermediate: "bg-amber-50 text-amber-600 border-amber-200",
-    Advanced:     "bg-red-50 text-red-600 border-red-200",
+    Advanced: "bg-red-50 text-red-600 border-red-200",
   };
   return (
     <span className={`text-xs font-bold px-2.5 py-1 rounded-full border ${map[level] || "bg-slate-50 text-slate-500 border-slate-200"}`}>
@@ -63,13 +63,13 @@ const ConfirmModal = ({ isOpen, title, message, onConfirm, onCancel, loading }) 
 // ── Main Component ────────────────────────────────────
 
 function AdminCourses() {
-  const [courses, setCourses]           = useState([]);
-  const [loading, setLoading]           = useState(true);
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
-  const [search, setSearch]             = useState("");
-  const [levelFilter, setLevelFilter]   = useState("ALL");
+  const [search, setSearch] = useState("");
+  const [levelFilter, setLevelFilter] = useState("ALL");
   const [statusFilter, setStatusFilter] = useState("ALL");
-  const [viewMode, setViewMode]         = useState("table");
+  const [viewMode, setViewMode] = useState("table");
   const [confirmModal, setConfirmModal] = useState({ open: false, title: "", message: "", action: null });
 
   const fetchCourses = useCallback(async () => {
@@ -116,8 +116,8 @@ function AdminCourses() {
   };
 
   const counts = useMemo(() => ({
-    total:    courses.length,
-    active:   courses.filter(c => c.isActive).length,
+    total: courses.length,
+    active: courses.filter(c => c.isActive).length,
     inactive: courses.filter(c => !c.isActive).length,
     beginner: courses.filter(c => c.courseLevel === "Beginner").length,
     advanced: courses.filter(c => c.courseLevel === "Advanced").length,
@@ -164,11 +164,11 @@ function AdminCourses() {
         {/* Summary tiles */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
           {[
-            { label: "Total",    val: counts.total,    bg: "bg-slate-50",   text: "text-slate-700" },
-            { label: "Active",   val: counts.active,   bg: "bg-emerald-50", text: "text-emerald-700" },
-            { label: "Inactive", val: counts.inactive, bg: "bg-red-50",     text: "text-red-700" },
-            { label: "Beginner", val: counts.beginner, bg: "bg-blue-50",    text: "text-blue-700" },
-            { label: "Advanced", val: counts.advanced, bg: "bg-orange-50",  text: "text-orange-700" },
+            { label: "Total", val: counts.total, bg: "bg-slate-50", text: "text-slate-700" },
+            { label: "Active", val: counts.active, bg: "bg-emerald-50", text: "text-emerald-700" },
+            { label: "Inactive", val: counts.inactive, bg: "bg-red-50", text: "text-red-700" },
+            { label: "Beginner", val: counts.beginner, bg: "bg-blue-50", text: "text-blue-700" },
+            { label: "Advanced", val: counts.advanced, bg: "bg-orange-50", text: "text-orange-700" },
           ].map(({ label, val, bg, text }) => (
             <div key={label} className={`${bg} rounded-xl p-4 text-center border border-white shadow-sm`}>
               <p className={`text-2xl font-bold ${text}`}>{val}</p>

@@ -12,14 +12,14 @@ function AdminSettings() {
 
   const [profile, setProfile] = useState({
     firstName: user.firstName || "",
-    lastName:  user.lastName  || "",
-    email:     user.email     || "",
+    lastName: user.lastName || "",
+    email: user.email || "",
   });
 
   const [passwords, setPasswords] = useState({
-    current:  "",
-    next:     "",
-    confirm:  "",
+    current: "",
+    next: "",
+    confirm: "",
   });
 
   const [showPw, setShowPw] = useState({ current: false, next: false, confirm: false });
@@ -29,13 +29,15 @@ function AdminSettings() {
     e.preventDefault();
     setSaving(true);
     try {
-      // Profile update would go here — backend endpoint required
-      // For now we update localStorage to reflect UI changes
-      const updated = { ...user, firstName: profile.firstName, lastName: profile.lastName };
+      const res = await axiosInstance.patch("/user-api/update-profile", {
+        firstName: profile.firstName,
+        lastName:  profile.lastName,
+      });
+      const updated = { ...user, firstName: res.data.payload.firstName, lastName: res.data.payload.lastName };
       localStorage.setItem("user", JSON.stringify(updated));
       toast.success("Profile updated successfully!");
     } catch (err) {
-      toast.error("Failed to update profile.");
+      toast.error(err.response?.data?.message || "Failed to update profile.");
     } finally {
       setSaving(false);
     }
@@ -53,11 +55,14 @@ function AdminSettings() {
     }
     setSaving(true);
     try {
-      // Password change endpoint — customize as needed
-      toast.success("Password changed successfully!");
+      const res = await axiosInstance.patch("/user-api/change-password", {
+        currentPassword: passwords.current,
+        newPassword:     passwords.next,
+      });
+      toast.success(res.data.message || "Password changed successfully!");
       setPasswords({ current: "", next: "", confirm: "" });
     } catch (err) {
-      toast.error("Failed to change password.");
+      toast.error(err.response?.data?.message || "Failed to change password.");
     } finally {
       setSaving(false);
     }
