@@ -132,8 +132,21 @@ function AdminDashboard() {
   // ─── Fetch Data ───────────────────────────────
   const fetchStats = useCallback(async () => {
     try {
-      const res = await axiosInstance.get("/admin-api/stats");
-      setStats(res.data.payload);
+      const [statsRes, usersRes] = await Promise.all([
+        axiosInstance.get("/admin-api/stats"),
+        axiosInstance.get("/admin-api/users")
+      ]);
+      const usersList = usersRes.data.payload || [];
+      const updatedStats = {
+        ...statsRes.data.payload,
+        totalUsers: usersList.length,
+        activeUsers: usersList.filter(u => u.isActive).length,
+        inactiveUsers: usersList.length - usersList.filter(u => u.isActive).length,
+        students: usersList.filter(u => u.role === "STUDENT").length,
+        instructors: usersList.filter(u => u.role === "INSTRUCTOR").length,
+        admins: usersList.filter(u => u.role === "ADMIN").length,
+      };
+      setStats(updatedStats);
     } catch (err) {
       console.error("Stats fetch error:", err);
     }

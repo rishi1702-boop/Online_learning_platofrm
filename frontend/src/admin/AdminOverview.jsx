@@ -82,11 +82,24 @@ function AdminOverview() {
   const fetchStats = useCallback(async () => {
     try {
       setLoading(true);
-      const [statsRes, coursesRes] = await Promise.all([
+      const [statsRes, coursesRes, usersRes] = await Promise.all([
         axiosInstance.get("/admin-api/stats"),
-        axiosInstance.get("/admin-api/courses")
+        axiosInstance.get("/admin-api/courses"),
+        axiosInstance.get("/admin-api/users")
       ]);
-      setStats(statsRes.data.payload);
+      
+      const usersList = usersRes.data.payload || [];
+      const updatedStats = {
+        ...statsRes.data.payload,
+        totalUsers: usersList.length,
+        activeUsers: usersList.filter(u => u.isActive).length,
+        inactiveUsers: usersList.length - usersList.filter(u => u.isActive).length,
+        students: usersList.filter(u => u.role === "STUDENT").length,
+        instructors: usersList.filter(u => u.role === "INSTRUCTOR").length,
+        admins: usersList.filter(u => u.role === "ADMIN").length,
+      };
+      
+      setStats(updatedStats);
       setCourses(coursesRes.data.payload || []);
     } catch (err) {
       console.error("Stats fetch error:", err);

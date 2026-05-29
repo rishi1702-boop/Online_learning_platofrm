@@ -65,16 +65,16 @@ const TopCoursesPanel = ({ courses }) => {
 };
 
 const PlatformRatiosPanel = ({ stats }) => {
-  const activeUserRatio   = stats?.totalUsers    ? ((stats.activeUsers / stats.totalUsers) * 100).toFixed(1)       : "0.0";
-  const courseActivePct   = stats?.totalCourses  ? ((stats.activeCourses / stats.totalCourses) * 100).toFixed(1)   : "0.0";
-  const enrollPerUser     = stats?.totalUsers    ? (stats.totalEnrollments / stats.totalUsers).toFixed(2)           : "0.00";
-  const reviewsPerCourse  = stats?.totalCourses  ? (stats.totalReviews / stats.totalCourses).toFixed(1)            : "0.0";
+  const activeUserRatio = stats?.totalUsers ? ((stats.activeUsers / stats.totalUsers) * 100).toFixed(1) : "0.0";
+  const courseActivePct = stats?.totalCourses ? ((stats.activeCourses / stats.totalCourses) * 100).toFixed(1) : "0.0";
+  const enrollPerUser = stats?.totalUsers ? (stats.totalEnrollments / stats.totalUsers).toFixed(2) : "0.00";
+  const reviewsPerCourse = stats?.totalCourses ? (stats.totalReviews / stats.totalCourses).toFixed(1) : "0.0";
 
   const ratios = [
-    { label: "User Activation Rate",    val: activeUserRatio + "%",   bar: parseFloat(activeUserRatio),  color: "bg-emerald-500", desc: "Active / total users" },
-    { label: "Course Activation Rate",  val: courseActivePct + "%",   bar: parseFloat(courseActivePct),  color: "bg-violet-500",  desc: "Active / total courses" },
-    { label: "Enrollments per User",    val: enrollPerUser,            bar: Math.min(parseFloat(enrollPerUser) * 20, 100), color: "bg-blue-500",    desc: "Avg courses per user" },
-    { label: "Reviews per Course",      val: reviewsPerCourse,         bar: Math.min(parseFloat(reviewsPerCourse) * 20, 100), color: "bg-amber-500",   desc: "Avg reviews per course" },
+    { label: "User Activation Rate", val: activeUserRatio + "%", bar: parseFloat(activeUserRatio), color: "bg-emerald-500", desc: "Active / total users" },
+    { label: "Course Activation Rate", val: courseActivePct + "%", bar: parseFloat(courseActivePct), color: "bg-violet-500",  desc: "Active / total courses" },
+    { label: "Enrollments per User", val: enrollPerUser, bar: Math.min(parseFloat(enrollPerUser) * 20, 100), color: "bg-blue-500", desc: "Avg courses per user" },
+    { label: "Reviews per Course", val: reviewsPerCourse, bar: Math.min(parseFloat(reviewsPerCourse) * 20, 100), color: "bg-amber-500", desc: "Avg reviews per course" },
   ];
 
   return (
@@ -116,11 +116,24 @@ function AdminAnalytics() {
   const fetchStats = useCallback(async () => {
     try {
       setLoading(true);
-      const [statsRes, coursesRes] = await Promise.all([
+      const [statsRes, coursesRes, usersRes] = await Promise.all([
         axiosInstance.get("/admin-api/stats"),
-        axiosInstance.get("/admin-api/courses")
+        axiosInstance.get("/admin-api/courses"),
+        axiosInstance.get("/admin-api/users")
       ]);
-      setStats(statsRes.data.payload);
+      
+      const usersList = usersRes.data.payload || [];
+      const updatedStats = {
+        ...statsRes.data.payload,
+        totalUsers: usersList.length,
+        activeUsers: usersList.filter(u => u.isActive).length,
+        inactiveUsers: usersList.length - usersList.filter(u => u.isActive).length,
+        students: usersList.filter(u => u.role === "STUDENT").length,
+        instructors: usersList.filter(u => u.role === "INSTRUCTOR").length,
+        admins: usersList.filter(u => u.role === "ADMIN").length,
+      };
+      
+      setStats(updatedStats);
       setCourses(coursesRes.data.payload || []);
     } catch (err) {
       console.error("Stats fetch error:", err);
@@ -135,15 +148,15 @@ function AdminAnalytics() {
     if (!stats) return [];
     return [
       { name: "Instructors", value: stats.instructors },
-      { name: "Students",    value: stats.students    },
-      { name: "Admins",      value: stats.admins      },
+      { name: "Students", value: stats.students },
+      { name: "Admins", value: stats.admins },
     ];
   }, [stats]);
 
   const userStatusData = useMemo(() => {
     if (!stats) return [];
     return [
-      { name: "Active",   value: stats.activeUsers   },
+      { name: "Active", value: stats.activeUsers },
       { name: "Inactive", value: stats.inactiveUsers },
     ];
   }, [stats]);
@@ -151,8 +164,8 @@ function AdminAnalytics() {
   const courseStatusData = useMemo(() => {
     if (!stats) return [];
     return [
-      { name: "Active",   value: stats.activeCourses                        },
-      { name: "Inactive", value: stats.totalCourses - stats.activeCourses   },
+      { name: "Active", value: stats.activeCourses },
+      { name: "Inactive", value: stats.totalCourses - stats.activeCourses },
     ];
   }, [stats]);
 

@@ -8,9 +8,9 @@ import {
 } from "react-icons/fi";
 
 const levelColor = {
-  Beginner:     "text-emerald-700 bg-emerald-50 border-emerald-200",
+  Beginner: "text-emerald-700 bg-emerald-50 border-emerald-200",
   Intermediate: "text-amber-700   bg-amber-50   border-amber-200",
-  Advanced:     "text-red-700     bg-red-50     border-red-200",
+  Advanced: "text-red-700 bg-red-50     border-red-200",
 };
 
 export default function InstructorCourseDetails() {

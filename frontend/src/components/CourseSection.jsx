@@ -43,12 +43,38 @@ function CoursesSection() {
           </p>
         </div>
 
-        <Link
-          to='/all-courses'
-          className="w-fit flex items-center gap-1 rounded border border-[#1c1d1f] px-4 py-2 text-sm font-bold text-[#1c1d1f] transition hover:bg-[#f7f9fa]"
-        >
-          Show all courses <FiChevronRight size={15} />
-        </Link>
+        {(() => {
+          const user = JSON.parse(localStorage.getItem("user") || "null");
+          if (!user || user.role === "STUDENT") {
+            return (
+              <Link
+                to='/all-courses'
+                className="w-fit flex items-center gap-1 rounded border border-[#1c1d1f] px-4 py-2 text-sm font-bold text-[#1c1d1f] transition hover:bg-[#f7f9fa]"
+              >
+                Show all courses <FiChevronRight size={15} />
+              </Link>
+            );
+          } else if (user.role === "INSTRUCTOR") {
+            return (
+              <Link
+                to='/instructor-my-courses'
+                className="w-fit flex items-center gap-1 rounded border border-violet-600 px-4 py-2 text-sm font-bold text-violet-600 transition hover:bg-violet-50"
+              >
+                Manage your courses <FiChevronRight size={15} />
+              </Link>
+            );
+          } else if (user.role === "ADMIN") {
+            return (
+              <Link
+                to='/admin/courses'
+                className="w-fit flex items-center gap-1 rounded border border-violet-600 px-4 py-2 text-sm font-bold text-violet-600 transition hover:bg-violet-50"
+              >
+                Manage all courses <FiChevronRight size={15} />
+              </Link>
+            );
+          }
+          return null;
+        })()}
       </div>
 
       {/* Category Pills */}

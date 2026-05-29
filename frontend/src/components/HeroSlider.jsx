@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 
 function HeroSlider() {
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+
   return (
     <section className="relative overflow-hidden rounded-3xl border border-[#dfe1e8] bg-linear-to-br from-[#fff5f7] via-[#f6f9ff] to-[#eef8f7] p-8 lg:p-14">
       <div className="absolute -right-10 -top-10 h-44 w-44 rounded-full bg-[#0f7c90]/10 blur-2xl" />
@@ -20,12 +22,40 @@ function HeroSlider() {
           </p>
 
           <div className="mt-7 flex flex-wrap gap-3">
-            <Link to="/all-courses" className="rounded bg-[#1c1d1f] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#0b0c0d] text-center">
-              Explore courses
-            </Link>
-            <Link to="/learning-paths" className="rounded border border-[#1c1d1f] px-5 py-3 text-sm font-bold text-[#1c1d1f] transition hover:bg-white text-center">
-              View learning paths
-            </Link>
+            {!user || user.role === "STUDENT" ? (
+              <>
+                <Link to="/all-courses" className="rounded bg-[#1c1d1f] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#0b0c0d] text-center">
+                  Explore courses
+                </Link>
+                <Link to="/learning-paths" className="rounded border border-[#1c1d1f] px-5 py-3 text-sm font-bold text-[#1c1d1f] transition hover:bg-white text-center">
+                  View learning paths
+                </Link>
+              </>
+            ) : user.role === "INSTRUCTOR" ? (
+              <>
+                <Link to="/instructor-dashboard" className="rounded bg-violet-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-violet-700 text-center">
+                  Instructor Panel
+                </Link>
+                <Link to="/instructor-my-courses" className="rounded border border-violet-600 px-5 py-3 text-sm font-bold text-violet-600 transition hover:bg-violet-50 text-center">
+                  My Courses
+                </Link>
+                <Link to="/create-course" className="rounded bg-[#1c1d1f] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#0b0c0d] text-center">
+                  Create Course
+                </Link>
+              </>
+            ) : user.role === "ADMIN" ? (
+              <>
+                <Link to="/admin-dashboard" className="rounded bg-violet-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-violet-700 text-center">
+                  Admin Panel
+                </Link>
+                <Link to="/admin/users" className="rounded border border-violet-600 px-5 py-3 text-sm font-bold text-violet-600 transition hover:bg-violet-50 text-center">
+                  Manage Users
+                </Link>
+                <Link to="/admin/courses" className="rounded bg-[#1c1d1f] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#0b0c0d] text-center">
+                  Manage Courses
+                </Link>
+              </>
+            ) : null}
           </div>
 
           <div className="mt-8 flex flex-wrap items-center gap-6 text-sm text-[#4d5156]">

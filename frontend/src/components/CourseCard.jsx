@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { FiBook, FiStar, FiUsers } from "react-icons/fi";
+import { toast } from "react-hot-toast";
 
 const levelColor = {
   Beginner:     "text-emerald-700 bg-emerald-50",
@@ -8,10 +9,35 @@ const levelColor = {
 };
 
 function CourseCard({ course }) {
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const isInstructor = user?.role === "INSTRUCTOR";
+  const isAdmin = user?.role === "ADMIN";
+  
+  // Check if instructor owns the course
+  const instructorId = course.instructor?._id || course.instructor;
+  const isOwner = isInstructor && instructorId && user?._id && instructorId.toString() === user._id.toString();
+
+  let targetPath = `/course/${course._id}`;
+  if (isInstructor) {
+    targetPath = isOwner ? `/instructor/course/${course._id}` : "#";
+  } else if (isAdmin) {
+    targetPath = "/admin/courses";
+  }
+
+  const handleCardClick = (e) => {
+    if (isInstructor && !isOwner) {
+      e.preventDefault();
+      toast.error("Instructors can only view and manage their own courses.");
+    }
+  };
+
   return (
     <Link
-      to="/all-courses"
-      className="flex flex-col rounded-2xl overflow-hidden border border-[#e9eaf2] hover:shadow-xl transition-all duration-300 group bg-white"
+      to={targetPath}
+      onClick={handleCardClick}
+      className={`flex flex-col rounded-2xl overflow-hidden border border-[#e9eaf2] transition-all duration-300 group bg-white ${
+        isInstructor && !isOwner ? "opacity-75 cursor-not-allowed hover:border-red-200" : "hover:shadow-xl"
+      }`}
     >
       {/* Thumbnail */}
       <div className="relative h-40 overflow-hidden bg-gradient-to-br from-violet-500 to-indigo-600 flex-shrink-0">
@@ -30,6 +56,13 @@ function CourseCard({ course }) {
           <div className="absolute top-2 left-2">
             <span className={`text-xs font-bold px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-sm ${levelColor[course.courseLevel] || "text-slate-600"}`}>
               {course.courseLevel}
+            </span>
+          </div>
+        )}
+        {isInstructor && isOwner && (
+          <div className="absolute top-2 right-2">
+            <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-violet-600 text-white shadow">
+              Your Course
             </span>
           </div>
         )}

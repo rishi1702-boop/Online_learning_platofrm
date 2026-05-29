@@ -40,9 +40,9 @@ const MOCK_COURSES = [
     courseLevel: "Beginner",
     thumbnail:
       "https://images.unsplash.com/photo-1593720213428-28a5b9e94613?w=800&q=80",
-    studentsEnrolled: 4823,
-    rating: 4.8,
-    ratingCount: 1204,
+    studentsEnrolled: 0,
+    rating: 0,
+    ratingCount: 0,
     courseOutcomes: [
       "Build full-stack web applications from scratch",
       "Master React and modern JavaScript (ES6+)",
@@ -100,9 +100,9 @@ const MOCK_COURSES = [
     courseLevel: "Intermediate",
     thumbnail:
       "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=80",
-    studentsEnrolled: 3102,
-    rating: 4.7,
-    ratingCount: 876,
+    studentsEnrolled: 0,
+    rating: 0,
+    ratingCount: 0,
     courseOutcomes: [
       "Write clean, Pythonic code",
       "Analyse datasets with Pandas and NumPy",
@@ -160,9 +160,9 @@ const MOCK_COURSES = [
     courseLevel: "Beginner",
     thumbnail:
       "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80",
-    studentsEnrolled: 2450,
-    rating: 4.9,
-    ratingCount: 654,
+    studentsEnrolled: 0,
+    rating: 0,
+    ratingCount: 0,
     courseOutcomes: [
       "Conduct user research and create personas",
       "Sketch wireframes and low-fidelity mockups",
@@ -220,9 +220,9 @@ const MOCK_COURSES = [
     courseLevel: "Advanced",
     thumbnail:
       "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=800&q=80",
-    studentsEnrolled: 1876,
-    rating: 4.6,
-    ratingCount: 432,
+    studentsEnrolled: 0,
+    rating: 0,
+    ratingCount: 0,
     courseOutcomes: [
       "Navigate the AWS console and core services",
       "Deploy apps to EC2, S3, and Lambda",

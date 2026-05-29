@@ -28,6 +28,10 @@ import CourseDetails from "./student/CourseDetails"
 import CourseContent from "./student/CourseContent"
 import Checkout from "./student/Checkout"
 import LearningPaths from "./student/LearningPaths"
+import TermsAndServices from "./pages/TermsAndServices"
+import AboutUs from "./pages/AboutUs"
+import PrivacyPolicy from "./pages/PrivacyPolicy"
+import Contact from "./pages/Contact"
 
 function App() {
   return (
@@ -49,6 +53,11 @@ function App() {
               <Register />
             </PublicRoute>
           } />
+
+          <Route path="terms-and-services" element={<TermsAndServices />} />
+          <Route path="about-us" element={<AboutUs />} />
+          <Route path="privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="contact" element={<Contact />} />
 
           {/* Protected Student Routes */}
           <Route path="student-dashboard" element={
