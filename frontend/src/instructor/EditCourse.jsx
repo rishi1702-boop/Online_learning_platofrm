@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { axiosInstance } from "../api/axiosInstance";
@@ -393,7 +394,7 @@ export default function EditCourse() {
                                 No lectures added yet.
                               </div>
                             ) : (
-                              section.lectures?.map((lec, lIdx) => (
+                              section.lectures?.map((lec) => (
                                 <div key={lec._id} className="group border border-slate-200 rounded-2xl p-4 flex items-center justify-between hover:border-blue-300 hover:shadow-md hover:shadow-blue-500/5 bg-white transition-all">
                                   <div className="flex items-center gap-4 overflow-hidden">
                                     <div className="bg-blue-50 text-blue-600 p-2.5 rounded-xl flex-shrink-0 group-hover:scale-110 transition-transform">

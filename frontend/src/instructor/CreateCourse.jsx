@@ -1,8 +1,9 @@
+
 import React, { useState } from "react";
 import { axiosInstance } from "../api/axiosInstance";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { FiUploadCloud, FiImage, FiChevronLeft } from "react-icons/fi";
+import { FiUploadCloud, FiChevronLeft } from "react-icons/fi";
 
 function CreateCourse() {
   const navigate = useNavigate();

@@ -1,10 +1,11 @@
+
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { axiosInstance } from "../api/axiosInstance";
 import { toast } from "react-hot-toast";
 import { 
-  FiArrowLeft, FiEdit3, FiUsers, FiStar, FiBook, 
-  FiPlay, FiCheckCircle, FiCopy, FiTrendingUp 
+  FiArrowLeft, FiEdit3, FiUsers, FiStar, FiBook,
+  FiPlay, FiCheckCircle, FiCopy, FiTrendingUp
 } from "react-icons/fi";
 
 const levelColor = {
@@ -69,13 +70,13 @@ export default function InstructorCourseDetails() {
           >
             <FiEdit3 size={16} /> Edit Course
           </Link>
-          {/* <Link 
+          { <Link
             to={`/course/${course._id}`} // Link to the public page
             target="_blank"
             className="flex items-center gap-2 bg-slate-800 text-white px-4 py-2 rounded-xl font-bold hover:bg-slate-900 transition text-sm"
           >
             Preview as Student
-          </Link> */}
+          </Link> }
         </div>
       </div>
 
@@ -185,7 +186,7 @@ export default function InstructorCourseDetails() {
                         <span className="text-xs font-semibold text-slate-400 bg-white px-2 py-1 rounded shadow-sm border border-slate-100">{section.lectures?.length || 0} lectures</span>
                       </div>
                       <div className="divide-y divide-slate-100">
-                        {section.lectures?.map((lec, lIdx) => (
+                        {section.lectures?.map((lec) => (
                           <div key={lec._id} className="px-5 py-3 flex items-center gap-3 bg-white hover:bg-slate-50/50 transition">
                             <FiPlay size={14} className="text-slate-400" />
                             <span className="text-sm font-medium text-slate-600 flex-1">{lec.title}</span>
