@@ -7,9 +7,43 @@ import bcrypt from "bcrypt";
 
 export const userRouter = express.Router();
 
-// Apply verifyToken middleware to all user routes
-userRouter.use(verifyToken);
+// ── PUBLIC ROUTES (no auth required) ──
 
+// Get all courses (public - needed for Home page & unauthenticated browsing)
+userRouter.get('/courses', async (req, res) => {
+    try {
+        const allCourses = await Course.find();
+
+        res.status(200).json({
+            message: "all courses",
+            payload: allCourses
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Get single course details (public)
+userRouter.get('/course/:id', async(req, res)=>{
+    try {
+        const courseId = req.params.id;
+        const course = await Course.findById(courseId)
+            .populate("reviews.user", "firstName lastName");
+        if (!course) {
+            return res.status(404).json({ message: "course not found" });
+        }
+        res.status(200).json({
+            message: "course details",
+            payload: course
+        });
+    } catch(error) {
+        res.status(500).json({message: error.message});
+    }
+});
+
+// ── PROTECTED ROUTES (auth required) ──
+userRouter.use(verifyToken);
 
 // Get User Profile
 userRouter.get('/profile', async (req, res) => {
@@ -193,40 +227,6 @@ userRouter.get('/my-courses', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
-
-userRouter.get('/courses', async (req, res) => {
-    try {
-        const allCourses = await Course.find();
-
-        res.status(200).json({
-            message: "all courses",
-            payload: allCourses
-        });
-
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
-
-
-// Get the single course details
-
-userRouter.get('/course/:id', async(req, res)=>{
-    try {
-        const courseId = req.params.id;
-        const course = await Course.findById(courseId)
-            .populate("reviews.user", "firstName lastName");
-        if (!course) {
-            return res.status(404).json({ message: "course not found" });
-        }
-        res.status(200).json({
-            message: "course details",
-            payload: course
-        });
-    } catch(error) {
-        res.status(500).json({message: error.message});
-    }
-})
 
 // Student review and rating
 
