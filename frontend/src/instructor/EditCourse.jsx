@@ -4,7 +4,8 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { axiosInstance } from "../api/axiosInstance";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { FiArrowLeft, FiSave, FiPlus, FiTrash2, FiVideo, FiLayers, FiInfo, FiChevronDown, FiChevronUp } from "react-icons/fi";
+import { FiArrowLeft, FiSave, FiPlus, FiTrash2, FiVideo, FiLayers, FiInfo, FiChevronDown, FiChevronUp, FiFileText } from "react-icons/fi";
+import QuizBuilderModal from "./QuizBuilderModal";
 
 const categories = ["Development", "Design", "Business", "Marketing", "IT & Software", "Personal Development", "Photography", "Music"];
 const levels = ["Beginner", "Intermediate", "Advanced"];
@@ -25,6 +26,18 @@ export default function EditCourse() {
   const [uploadingLecture, setUploadingLecture] = useState({});
   const [uploadProgress, setUploadProgress] = useState({}); // sectionId → 0-100
   const [expandedSections, setExpandedSections] = useState({});
+  const [addingQuizSectionId, setAddingQuizSectionId] = useState(null);
+
+  const handleDeleteQuiz = async (sectionId, quizId) => {
+    if (!window.confirm("Remove this quiz?")) return;
+    try {
+      const res = await axiosInstance.delete(`/instructor-api/delete-quiz/${courseId}/${sectionId}/${quizId}`);
+      setCourse(res.data.payload);
+      toast.success("Quiz removed");
+    } catch (err) {
+      toast.error("Failed to delete quiz");
+    }
+  };
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -387,33 +400,64 @@ export default function EditCourse() {
                       {isExpanded && (
                         <div className="p-6 bg-white animate-in fade-in slide-in-from-top-2">
                           
-                          {/* Lectures List */}
+                          {/* Lectures & Quizzes List */}
                           <div className="space-y-3 mb-6">
-                            {section.lectures?.length === 0 ? (
+                            {section.lectures?.length === 0 && section.quizzes?.length === 0 ? (
                               <div className="text-center py-6 bg-slate-50 border border-slate-100 border-dashed rounded-2xl text-slate-400 text-sm font-medium">
-                                No lectures added yet.
+                                No content added yet.
                               </div>
                             ) : (
-                              section.lectures?.map((lec) => (
-                                <div key={lec._id} className="group border border-slate-200 rounded-2xl p-4 flex items-center justify-between hover:border-blue-300 hover:shadow-md hover:shadow-blue-500/5 bg-white transition-all">
-                                  <div className="flex items-center gap-4 overflow-hidden">
-                                    <div className="bg-blue-50 text-blue-600 p-2.5 rounded-xl flex-shrink-0 group-hover:scale-110 transition-transform">
-                                      <FiVideo size={16} />
+                              <>
+                                {section.lectures?.map((lec) => (
+                                  <div key={lec._id} className="group border border-slate-200 rounded-2xl p-4 flex items-center justify-between hover:border-blue-300 hover:shadow-md hover:shadow-blue-500/5 bg-white transition-all">
+                                    <div className="flex items-center gap-4 overflow-hidden">
+                                      <div className="bg-blue-50 text-blue-600 p-2.5 rounded-xl flex-shrink-0 group-hover:scale-110 transition-transform">
+                                        <FiVideo size={16} />
+                                      </div>
+                                      <div className="flex flex-col">
+                                        <span className="font-bold text-slate-700 truncate">{lec.title}</span>
+                                        <span className="text-xs text-slate-400 truncate max-w-xs md:max-w-sm">{lec.videoUrl}</span>
+                                      </div>
                                     </div>
-                                    <div className="flex flex-col">
-                                      <span className="font-bold text-slate-700 truncate">{lec.title}</span>
-                                      <span className="text-xs text-slate-400 truncate max-w-xs md:max-w-sm">{lec.videoUrl}</span>
-                                    </div>
+                                    <button 
+                                      onClick={() => handleDeleteLecture(section._id, lec._id)}
+                                      className="text-slate-300 hover:text-white hover:bg-red-500 p-2 rounded-xl transition flex-shrink-0 opacity-0 group-hover:opacity-100"
+                                    >
+                                      <FiTrash2 size={16} />
+                                    </button>
                                   </div>
-                                  <button 
-                                    onClick={() => handleDeleteLecture(section._id, lec._id)}
-                                    className="text-slate-300 hover:text-white hover:bg-red-500 p-2 rounded-xl transition flex-shrink-0 opacity-0 group-hover:opacity-100"
-                                  >
-                                    <FiTrash2 size={16} />
-                                  </button>
-                                </div>
-                              ))
+                                ))}
+                                {section.quizzes?.map((quiz) => (
+                                  <div key={quiz._id} className="group border border-slate-200 rounded-2xl p-4 flex items-center justify-between hover:border-amber-300 hover:shadow-md hover:shadow-amber-500/5 bg-white transition-all">
+                                    <div className="flex items-center gap-4 overflow-hidden">
+                                      <div className="bg-amber-50 text-amber-600 p-2.5 rounded-xl flex-shrink-0 group-hover:scale-110 transition-transform">
+                                        <FiFileText size={16} />
+                                      </div>
+                                      <div className="flex flex-col">
+                                        <span className="font-bold text-slate-700 truncate">Quiz: {quiz.title}</span>
+                                        <span className="text-xs text-slate-400 truncate max-w-xs md:max-w-sm">{quiz.questions?.length || 0} Questions</span>
+                                      </div>
+                                    </div>
+                                    <button 
+                                      onClick={() => handleDeleteQuiz(section._id, quiz._id)}
+                                      className="text-slate-300 hover:text-white hover:bg-red-500 p-2 rounded-xl transition flex-shrink-0 opacity-0 group-hover:opacity-100"
+                                    >
+                                      <FiTrash2 size={16} />
+                                    </button>
+                                  </div>
+                                ))}
+                              </>
                             )}
+                          </div>
+
+                          {/* Add Content Controls */}
+                          <div className="flex items-center gap-3 mb-4">
+                            <button 
+                              onClick={() => setAddingQuizSectionId(section._id)}
+                              className="text-xs font-bold bg-amber-50 text-amber-600 px-4 py-2 rounded-lg hover:bg-amber-100 transition flex items-center gap-2"
+                            >
+                              <FiPlus size={14} /> Add Quiz
+                            </button>
                           </div>
 
                           {/* Add Lecture Inline Form */}
@@ -506,6 +550,15 @@ export default function EditCourse() {
         </div>
 
       </div>
+
+      {addingQuizSectionId && (
+        <QuizBuilderModal
+          courseId={courseId}
+          sectionId={addingQuizSectionId}
+          onClose={() => setAddingQuizSectionId(null)}
+          onSuccess={(updatedCourse) => setCourse(updatedCourse)}
+        />
+      )}
     </div>
   );
 }

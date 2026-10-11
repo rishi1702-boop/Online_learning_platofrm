@@ -52,8 +52,8 @@ function CreateCourse() {
     <div className="max-w-4xl mx-auto">
       {/* Top Navigation Bar */}
       <div className="flex items-center justify-between mb-8">
-        <button 
-          onClick={() => navigate(-1)} 
+        <button
+          onClick={() => navigate(-1)}
           className="flex items-center gap-2 text-slate-500 hover:text-slate-800 transition"
         >
           <FiChevronLeft /> Back to Dashboard
@@ -62,12 +62,12 @@ function CreateCourse() {
       </div>
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        
+
         {/* LEFT COLUMN: Thumbnail Upload */}
         <div className="md:col-span-1 space-y-6">
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
             <label className="block text-sm font-semibold text-slate-700 mb-4">Course Thumbnail</label>
-            <div 
+            <div
               onClick={() => document.getElementById('fileInput').click()}
               className="relative group aspect-video bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-slate-100 transition"
             >
@@ -92,24 +92,24 @@ function CreateCourse() {
           <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 space-y-5">
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">Course Title</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 placeholder="e.g. Master React in 30 Days"
                 className="w-full px-4 py-3 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-blue-500 outline-none transition"
                 value={form.title}
-                onChange={(e) => setForm({...form, title: e.target.value})}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
                 required
               />
             </div>
 
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">Description</label>
-              <textarea 
+              <textarea
                 rows="4"
                 placeholder="What will students learn in this course?"
                 className="w-full px-4 py-3 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-blue-500 outline-none transition"
                 value={form.description}
-                onChange={(e) => setForm({...form, description: e.target.value})}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
                 required
               />
             </div>
@@ -117,23 +117,23 @@ function CreateCourse() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">Category</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   placeholder="e.g. Development"
                   className="w-full px-4 py-3 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-blue-500 outline-none transition"
                   value={form.category}
-                  onChange={(e) => setForm({...form, category: e.target.value})}
+                  onChange={(e) => setForm({ ...form, category: e.target.value })}
                   required
                 />
               </div>
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">Price (₹)</label>
-                <input 
-                  type="number" 
+                <input
+                  type="number"
                   placeholder="499"
                   className="w-full px-4 py-3 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-blue-500 outline-none transition"
                   value={form.price}
-                  onChange={(e) => setForm({...form, price: e.target.value})}
+                  onChange={(e) => setForm({ ...form, price: e.target.value })}
                   required
                 />
               </div>
@@ -141,10 +141,10 @@ function CreateCourse() {
 
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">Difficulty Level</label>
-              <select 
+              <select
                 className="w-full px-4 py-3 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-blue-500 outline-none transition appearance-none"
                 value={form.courseLevel}
-                onChange={(e) => setForm({...form, courseLevel: e.target.value})}
+                onChange={(e) => setForm({ ...form, courseLevel: e.target.value })}
               >
                 <option>Beginner</option>
                 <option>Intermediate</option>
@@ -154,14 +154,14 @@ function CreateCourse() {
           </div>
 
           <div className="flex justify-end gap-4">
-            <button 
+            <button
               type="button"
               onClick={() => navigate(-1)}
               className="px-8 py-3 rounded-xl font-semibold text-slate-500 hover:bg-slate-100 transition"
             >
               Cancel
             </button>
-            <button 
+            <button
               type="submit"
               disabled={loading}
               className="px-10 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 shadow-lg shadow-blue-200 transition disabled:opacity-50"

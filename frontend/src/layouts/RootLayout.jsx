@@ -1,6 +1,7 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import Chatbot from "../components/Chatbot";
 
 function RootLayout() {
   const { pathname } = useLocation();
@@ -14,6 +15,7 @@ function RootLayout() {
         <Outlet />
       </main>
       {!isAdminPage && <Footer />}
+      {!isAdminPage && <Chatbot />}
     </div>
   );
 }

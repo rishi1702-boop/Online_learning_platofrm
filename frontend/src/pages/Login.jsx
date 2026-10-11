@@ -24,8 +24,11 @@ function Login() {
       toast.success(res.data.message || "Login successful!");
       const user = res.data.payload;
 
-      // Save user to local storage
+      // Save user and token to local storage
       localStorage.setItem("user", JSON.stringify(user));
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+      }
 
       // Role-based navigation
       setTimeout(() => {
@@ -35,6 +38,8 @@ function Login() {
           navigate("/instructor-dashboard");
         } else if (user.role === "ADMIN") {
           navigate("/admin-dashboard");
+        } else if (user.role === "STARTUP" || user.role === "EMPLOYER") {
+          navigate("/startup-dashboard");
         }
       }, 1000);
 
@@ -122,12 +127,20 @@ function Login() {
             </button>
           </form>
 
-          <p className="mt-8 text-center text-[#64748b]">
-            Don't have an account?{" "}
-            <Link to="/register" className="font-bold text-[#3b82f6] hover:underline decoration-2">
-              Create an account
-            </Link>
-          </p>
+          <div className="mt-8 text-center space-y-2">
+            <p className="text-[#64748b]">
+              Don't have an account?{" "}
+              <Link to="/register" className="font-bold text-[#3b82f6] hover:underline decoration-2">
+                Create an account
+              </Link>
+            </p>
+            <p className="text-xs text-slate-500">
+              Hiring as a startup?{" "}
+              <Link to="/register-startup" className="font-bold text-emerald-600 hover:text-emerald-700 hover:underline">
+                Register your Startup &rarr;
+              </Link>
+            </p>
+          </div>
         </div>
 
         {/* RIGHT SECTION: VISUALS */}

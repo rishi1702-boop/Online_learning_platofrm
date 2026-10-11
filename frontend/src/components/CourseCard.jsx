@@ -1,6 +1,8 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FiBook, FiStar, FiUsers } from "react-icons/fi";
+import { FiBook, FiStar, FiUsers, FiHeart } from "react-icons/fi";
 import { toast } from "react-hot-toast";
+import { axiosInstance } from "../api/axiosInstance";
 
 const levelColor = {
   Beginner:     "text-emerald-700 bg-emerald-50",
@@ -12,6 +14,15 @@ function CourseCard({ course }) {
   const user = JSON.parse(localStorage.getItem("user") || "null");
   const isInstructor = user?.role === "INSTRUCTOR";
   const isAdmin = user?.role === "ADMIN";
+  const isStudent = user?.role === "STUDENT";
+  
+  const [isWishlisted, setIsWishlisted] = useState(false);
+
+  useEffect(() => {
+    if (isStudent && user?.wishlist?.includes(course._id)) {
+      setIsWishlisted(true);
+    }
+  }, [isStudent, course._id, user]);
   
   // Check if instructor owns the course
   const instructorId = course.instructor?._id || course.instructor;
@@ -31,11 +42,26 @@ function CourseCard({ course }) {
     }
   };
 
+  const handleWishlistToggle = async (e) => {
+    e.preventDefault(); // Prevent navigating to course details
+    try {
+      const res = await axiosInstance.post(`/user-api/wishlist/${course._id}`);
+      setIsWishlisted(!isWishlisted);
+      toast.success(isWishlisted ? "Removed from Wishlist" : "Added to Wishlist");
+      
+      // Update local storage so it persists across renders
+      const updatedUser = { ...user, wishlist: res.data.payload };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+    } catch (error) {
+      toast.error("Failed to update wishlist");
+    }
+  };
+
   return (
     <Link
       to={targetPath}
       onClick={handleCardClick}
-      className={`flex flex-col rounded-2xl overflow-hidden border border-[#e9eaf2] transition-all duration-300 group bg-white ${
+      className={`relative flex flex-col rounded-2xl overflow-hidden border border-[#e9eaf2] transition-all duration-300 group bg-white ${
         isInstructor && !isOwner ? "opacity-75 cursor-not-allowed hover:border-red-200" : "hover:shadow-xl"
       }`}
     >
@@ -53,14 +79,22 @@ function CourseCard({ course }) {
           </div>
         )}
         {course.courseLevel && (
-          <div className="absolute top-2 left-2">
+          <div className="absolute top-2 left-2 z-10">
             <span className={`text-xs font-bold px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-sm ${levelColor[course.courseLevel] || "text-slate-600"}`}>
               {course.courseLevel}
             </span>
           </div>
         )}
+        {isStudent && (
+          <button 
+            onClick={handleWishlistToggle}
+            className="absolute top-2 right-2 z-10 p-1.5 rounded-full bg-white/80 backdrop-blur-sm shadow hover:bg-white transition text-rose-500"
+          >
+            <FiHeart size={16} fill={isWishlisted ? "currentColor" : "none"} />
+          </button>
+        )}
         {isInstructor && isOwner && (
-          <div className="absolute top-2 right-2">
+          <div className="absolute top-2 right-2 z-10">
             <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-violet-600 text-white shadow">
               Your Course
             </span>

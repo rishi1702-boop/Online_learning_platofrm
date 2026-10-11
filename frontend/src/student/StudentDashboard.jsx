@@ -13,16 +13,23 @@ function StudentDashboard() {
   const [loading, setLoading] = useState(true);
   const [enrollingId, setEnrollingId] = useState(null);
 
+  const [recommendations, setRecommendations] = useState([]);
+  const [userProfile, setUserProfile] = useState(null);
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [enrolledRes, allRes] = await Promise.all([
+        const [enrolledRes, allRes, profileRes, recsRes] = await Promise.all([
           axiosInstance.get("/user-api/my-courses"),
           axiosInstance.get("/user-api/courses"),
+          axiosInstance.get("/user-api/profile"),
+          axiosInstance.get("/user-api/recommendations")
         ]);
         setEnrolledCourses(enrolledRes.data.payload || []);
         setAllCourses(allRes.data.payload || []);
+        setUserProfile(profileRes.data.payload || null);
+        setRecommendations(recsRes.data.payload || []);
       } catch (err) {
         console.error(err);
       } finally {
@@ -84,14 +91,17 @@ function StudentDashboard() {
             </h1>
             <p className="text-violet-200 text-sm">Continue your learning journey today.</p>
           </div>
-          <div className="flex gap-6">
-            <div className="bg-white/10 backdrop-blur-sm px-6 py-4 rounded-2xl text-center">
+          <div className="flex gap-4">
+            <div className="bg-white/10 backdrop-blur-sm px-6 py-4 rounded-2xl text-center flex flex-col items-center justify-center">
+              <div className="flex items-center gap-2">
+                <span className="text-3xl font-bold">{userProfile?.learningStreak?.currentStreak || 0}</span>
+                <span className="text-2xl">🔥</span>
+              </div>
+              <p className="text-violet-200 text-xs mt-1">Day Streak</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm px-6 py-4 rounded-2xl text-center flex flex-col items-center justify-center">
               <p className="text-3xl font-bold">{enrolledCourses.length}</p>
               <p className="text-violet-200 text-xs mt-1">Enrolled Courses</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm px-6 py-4 rounded-2xl text-center">
-              <p className="text-3xl font-bold">{allCourses.length}</p>
-              <p className="text-violet-200 text-xs mt-1">Total Courses</p>
             </div>
           </div>
         </div>
@@ -169,11 +179,17 @@ function StudentDashboard() {
                   See all <FiChevronRight size={16} />
                 </button>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {allCourses.filter((c) => !isEnrolled(c._id)).slice(0, 3).map((course) => (
-                  <CourseCard key={course._id} course={course} enrolled={false} levelColor={levelColor} onEnroll={handleEnroll} enrollingId={enrollingId} />
-                ))}
-              </div>
+              {recommendations.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {recommendations.map((course) => (
+                    <CourseCard key={course._id} course={course} enrolled={false} levelColor={levelColor} onEnroll={handleEnroll} enrollingId={enrollingId} />
+                  ))}
+                </div>
+              ) : (
+                <div className="bg-white rounded-2xl p-8 text-center shadow-sm">
+                  <p className="text-slate-500 font-medium">Enroll in a course to get AI recommendations.</p>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -293,7 +309,7 @@ function CourseCard({ course, enrolled, levelColor, onEnroll, enrollingId }) {
 
         {enrolled ? (
           <Link
-            to={`/course/${course._id}`}
+            to={`/learn/${course._id}`}
             className="w-full py-2.5 rounded-xl bg-violet-600 text-white text-sm font-bold text-center flex items-center justify-center gap-2 hover:bg-violet-700 transition"
           >
             <FiPlay size={14} /> Continue Learning

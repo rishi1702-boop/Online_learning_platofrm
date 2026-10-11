@@ -27,7 +27,14 @@ const lectureSchema = new mongoose.Schema({
 
 
 
-// Section Schema
+const quizSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    questions: [{
+        questionText: { type: String, required: true },
+        options: [{ type: String, required: true }],
+        correctOptionIndex: { type: Number, required: true }
+    }]
+});
 
 const sectionSchema = new mongoose.Schema({
     sectionTitle: {
@@ -36,6 +43,10 @@ const sectionSchema = new mongoose.Schema({
     },
     lectures: {
         type: [lectureSchema],
+        default: []
+    },
+    quizzes: {
+        type: [quizSchema],
         default: []
     }
 });
@@ -75,6 +86,21 @@ const reviewSchema = new mongoose.Schema({
 }, {
     timestamps: true,
     versionKey: false
+});
+
+
+// Gamified Learning Node Schema
+const TopicNodeSchema = new mongoose.Schema({
+    nodeId: { type: String, required: true },
+    title: { type: String, required: true },
+    prerequisiteNodes: [String],
+    pointsReward: { type: Number, default: 50 },
+    revisionNotes: { type: String },
+    referenceVault: {
+        previousPapersUrls: [String],
+        externalCuratedLinks: [String]
+    },
+    skillsTagged: [String]
 });
 
 
@@ -155,6 +181,11 @@ const courseSchema = new mongoose.Schema({
 
     reviews: {
         type: [reviewSchema],
+        default: []
+    },
+
+    topicNodes: {
+        type: [TopicNodeSchema],
         default: []
     }
 

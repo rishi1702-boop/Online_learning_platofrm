@@ -2,6 +2,7 @@ import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User.js";
+import { chatWithAI } from "../controllers/chatbotController.js";
 
 export const authRouter = express.Router();
 
@@ -16,6 +17,19 @@ authRouter.post('/register', async (req, res) => {
             return res.status(400).json({ message: "User with this email already exists" });
         }
 
+        if (user.role === 'STARTUP') {
+            user.startupProfile = {
+                companyName: user.companyName || user.startupProfile?.companyName,
+                startupName: user.companyName || user.startupProfile?.startupName,
+                establishedYear: user.establishedYear || user.startupProfile?.establishedYear,
+                location: user.location || user.startupProfile?.location || "Bengaluru, India",
+                noOfEmployees: user.noOfEmployees || user.startupProfile?.noOfEmployees || "1-10",
+                website: user.website || user.startupProfile?.website || "",
+                stage: user.stage || user.startupProfile?.stage || "Early Stage",
+                about: user.about || user.startupProfile?.about || ""
+            };
+        }
+
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(user.password, salt);
         const userDoc = await User.create(user);
@@ -25,6 +39,64 @@ authRouter.post('/register', async (req, res) => {
         delete userObj.password;
 
         res.status(201).json({ message: "User registered successfully", payload: userObj });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Dedicated Startup Registration
+authRouter.post('/register-startup', async (req, res) => {
+    try {
+        const {
+            firstName,
+            lastName,
+            email,
+            password,
+            companyName,
+            establishedYear,
+            location,
+            noOfEmployees,
+            website,
+            about
+        } = req.body;
+
+        if (!email || !password || !companyName) {
+            return res.status(400).json({ message: "Email, password, and company name are required" });
+        }
+
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: "An account with this email already exists" });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const newStartup = await User.create({
+            firstName: firstName || companyName,
+            lastName: lastName || "Team",
+            email,
+            password: hashedPassword,
+            role: "STARTUP",
+            startupProfile: {
+                companyName,
+                startupName: companyName,
+                establishedYear: establishedYear || new Date().getFullYear().toString(),
+                location: location || "Bengaluru, India",
+                noOfEmployees: noOfEmployees || "1-10",
+                website: website || "",
+                stage: "Early Stage",
+                about: about || ""
+            }
+        });
+
+        const userObj = newStartup.toObject();
+        delete userObj.password;
+
+        res.status(201).json({
+            message: "Startup registered successfully! You can now log in and post opportunities.",
+            payload: userObj
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -74,6 +146,7 @@ authRouter.post('/login', async (req, res) => {
 
         res.status(200).json({
             message: "Login successful",
+            token,
             payload: userObj
         });
 
@@ -92,3 +165,6 @@ authRouter.post('/logout', (req, res) => {
     });
     res.status(200).json({ message: "Logout successful" });
 });
+
+// Chatbot Route
+authRouter.post('/chatbot', chatWithAI);

@@ -5,7 +5,7 @@ import { axiosInstance } from "../api/axiosInstance";
 import { toast } from "react-hot-toast";
 import {
   FiUser, FiMail, FiLock, FiEye, FiEyeOff,
-  FiBookOpen, FiAward, FiUsers, FiShield, FiKey,
+  FiBookOpen, FiAward, FiUsers, FiShield, FiKey, FiBriefcase
 } from "react-icons/fi";
 
 // ─── Secret admin key (change this to match your backend config) ──
@@ -54,6 +54,19 @@ const PANEL_CONTENT = {
       { icon: FiUsers,    text: "Join a community of 50K+ learners" },
     ],
     headerIcon: null,
+  },
+  STARTUP: {
+    heading: ["Scale your venture with hungry", "talent"],
+    sub: "Post micro-internships & mini-tasks with zero corporate bonds. Reduce production costs while helping students gain practical experience and stipend.",
+    color: "#10b981",
+    blobColor: "rgba(16,185,129,0.12)",
+    iconColor: "text-emerald-500",
+    benefits: [
+      { icon: FiBriefcase, text: "Post micro-internships & paid mini-tasks" },
+      { icon: FiAward,    text: "Zero corporate bonds, flexible milestone stipends" },
+      { icon: FiUsers,    text: "Access students actively upgrading practical skills" },
+    ],
+    headerIcon: FiBriefcase,
   },
   INSTRUCTOR: {
     heading: ["Share your expertise with the", "world"],
@@ -150,6 +163,27 @@ function Register() {
           <div className="mb-6 text-center lg:text-left">
             <h1 className="text-4xl font-bold text-violet-600">Create account</h1>
             <p className="mt-2 text-slate-500">Start your journey on CourseHub today</p>
+          </div>
+
+          {/* DEDICATED STARTUP REGISTRATION CALLOUT */}
+          <div className="mb-5 p-3.5 bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border border-emerald-200/80 rounded-2xl flex items-center justify-between gap-3 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-emerald-600 text-white rounded-xl shadow-sm shrink-0">
+                <FiBriefcase size={18} />
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-emerald-950">Registering as a Startup?</h4>
+                <p className="text-[11px] text-emerald-700 leading-tight">
+                  Startups have a separate registration with company name, founded year, location & team size.
+                </p>
+              </div>
+            </div>
+            <Link
+              to="/register-startup"
+              className="shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-sm whitespace-nowrap"
+            >
+              Startup Portal &rarr;
+            </Link>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -318,6 +352,13 @@ function Register() {
               Log in
             </Link>
           </p>
+
+          <div className="mt-4 pt-4 border-t border-slate-100 text-center">
+            <span className="text-xs text-slate-500">Hiring as an employer or startup? </span>
+            <Link to="/register-startup" className="text-xs font-bold text-emerald-600 hover:text-emerald-700 hover:underline">
+              Register via Startup Portal &rarr;
+            </Link>
+          </div>
         </div>
 
         {/* ══════════════════════════════════════

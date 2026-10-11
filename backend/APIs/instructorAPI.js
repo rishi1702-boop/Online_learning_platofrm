@@ -797,3 +797,54 @@ instructorRouter.get("/global-reviews-analytics", async (req, res) => {
     res.status(500).json({ message: "Error fetching global analytics", error: error.message });
   }
 });
+
+// --- QUIZ MANAGEMENT ---
+
+// Add Quiz to Section
+instructorRouter.post("/add-quiz/:courseId/:sectionId", async (req, res) => {
+  try {
+    const { courseId, sectionId } = req.params;
+    const { title, questions } = req.body;
+    const instructorId = req.user._id;
+
+    const course = await Course.findById(courseId);
+    if (!course) return res.status(404).json({ message: "Course not found" });
+    if (course.instructor.toString() !== instructorId.toString()) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    const section = course.sections.id(sectionId);
+    if (!section) return res.status(404).json({ message: "Section not found" });
+
+    section.quizzes.push({ title, questions });
+    await course.save();
+
+    res.json({ message: "Quiz added successfully", payload: course });
+  } catch (error) {
+    res.status(500).json({ message: "Error adding quiz", error: error.message });
+  }
+});
+
+// Delete Quiz
+instructorRouter.delete("/delete-quiz/:courseId/:sectionId/:quizId", async (req, res) => {
+  try {
+    const { courseId, sectionId, quizId } = req.params;
+    const instructorId = req.user._id;
+
+    const course = await Course.findById(courseId);
+    if (!course) return res.status(404).json({ message: "Course not found" });
+    if (course.instructor.toString() !== instructorId.toString()) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    const section = course.sections.id(sectionId);
+    if (!section) return res.status(404).json({ message: "Section not found" });
+
+    section.quizzes.pull(quizId);
+    await course.save();
+
+    res.json({ message: "Quiz deleted successfully", payload: course });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting quiz", error: error.message });
+  }
+});

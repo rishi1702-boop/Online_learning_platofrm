@@ -8,6 +8,7 @@ import {
   FiLock, FiList, FiMessageSquare, FiFileText,
   FiChevronLeft, FiChevronRight, FiCircle, FiAlertTriangle, FiRefreshCw
 } from "react-icons/fi";
+import QuizView from "./QuizView";
 
 /* ─── Helpers ─────────────────────────────────────────── */
 function fmtDuration(seconds) {
@@ -64,9 +65,11 @@ export default function CourseContent() {
         }
 
         // Fetch backend progress
+        let lastWatched = null;
         try {
           const progressRes = await axiosInstance.get(`/user-api/progress/${courseId}`);
           const completedLectures = progressRes.data.payload?.completedLectures || [];
+          lastWatched = progressRes.data.payload?.lastWatchedLecture;
           
           const progressMap = {};
           completedLectures.forEach(id => {
@@ -77,11 +80,27 @@ export default function CourseContent() {
           console.error("Failed to fetch progress", err);
         }
 
-        // Default: open first section, select first lecture
+        // Initialize active lecture
         if (data.sections?.length > 0) {
-          setOpenSections({ [data.sections[0]._id]: true });
-          if (data.sections[0].lectures?.length > 0) {
-            setActiveLecture({ sectionIdx: 0, lectureIdx: 0 });
+          let found = false;
+          if (lastWatched) {
+            for (let si = 0; si < data.sections.length; si++) {
+              for (let li = 0; li < data.sections[si].lectures.length; li++) {
+                if (data.sections[si].lectures[li]._id === lastWatched) {
+                  setActiveLecture({ sectionIdx: si, lectureIdx: li, type: 'lecture' });
+                  setOpenSections({ [data.sections[si]._id]: true });
+                  found = true;
+                  break;
+                }
+              }
+              if (found) break;
+            }
+          }
+          if (!found) {
+            setOpenSections({ [data.sections[0]._id]: true });
+            if (data.sections[0].lectures?.length > 0) {
+              setActiveLecture({ sectionIdx: 0, lectureIdx: 0, type: 'lecture' });
+            }
           }
         }
       } catch (err) {
@@ -179,7 +198,14 @@ export default function CourseContent() {
   useEffect(() => {
     setVideoError(false);
     setVideoLoading(true);
-  }, [activeLecture]);
+
+    // Sync lastWatchedLecture to backend
+    if (activeLecture && currentLecture) {
+      axiosInstance.patch(`/user-api/progress/resume/${courseId}`, {
+        lastWatchedLecture: currentLecture._id
+      }).catch(err => console.error("Failed to update resume progress", err));
+    }
+  }, [activeLecture, currentLecture, courseId]);
 
   /* Save note */
   const saveNote = () => {
@@ -246,7 +272,7 @@ export default function CourseContent() {
           </div>
         </div>
 
-        {/* Progress */}
+        {/* Progress & Certificate */}
         <div className="flex items-center gap-4">
           <div className="hidden md:flex items-center gap-3">
             <div className="w-32 h-2 bg-slate-700 rounded-full overflow-hidden">
@@ -259,6 +285,49 @@ export default function CourseContent() {
               {completedCount}/{totalLectures} · {progressPct}%
             </span>
           </div>
+
+          {progressPct === 100 && (
+            <button
+              onClick={async () => {
+                try {
+                  const res = await axiosInstance.post(`/user-api/certificate/generate/${courseId}`);
+                  toast.success("Certificate claimed successfully!");
+                  navigate(`/verify-certificate?id=${res.data.payload.certificateId}`);
+                } catch (error) {
+                  const errorMsg = error.response?.data?.message || "Failed to claim certificate";
+                  if (error.response?.status === 403 && errorMsg.includes("assessment test")) {
+                    // Find the final quiz in the course and switch to it
+                    let qSec = -1;
+                    let qIdx = -1;
+                    for (let s = 0; s < course.sections.length; s++) {
+                      if (course.sections[s].quizzes?.length > 0) {
+                        qSec = s;
+                        qIdx = 0; // Take the first quiz found (usually final assessment)
+                      }
+                    }
+                    
+                    if (qSec !== -1) {
+                      toast.error("You must pass the Final Assessment first! Redirecting...", { duration: 3000 });
+                      setActiveLecture({ sectionIdx: qSec, quizIdx: qIdx, type: 'quiz' });
+                      setOpenSections(prev => ({ ...prev, [course.sections[qSec]._id]: true }));
+                      
+                      // Scroll to video area
+                      if (videoWrapperRef.current) {
+                        videoWrapperRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+                      }
+                    } else {
+                      toast.error(errorMsg, { duration: 5000 });
+                    }
+                  } else {
+                    toast.error(errorMsg, { duration: 5000 });
+                  }
+                }
+              }}
+              className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-bold hover:bg-emerald-700 transition"
+            >
+              <FiCheckCircle size={14} /> Claim Certificate
+            </button>
+          )}
 
           <button
             onClick={() => setSidebarOpen(o => !o)}
@@ -276,9 +345,17 @@ export default function CourseContent() {
         {/* ── VIDEO SIDE ── */}
         <div className={`flex flex-col flex-1 min-w-0 overflow-y-auto transition-all duration-300`}>
 
-          {/* Video player */}
+          {/* Main content area (Video or Quiz) */}
           <div ref={videoWrapperRef} className="bg-black w-full relative" style={{ minHeight: "340px" }}>
-            {currentLecture?.videoUrl ? (
+            {activeLecture?.type === 'quiz' ? (
+              <div className="bg-slate-950 min-h-full">
+                <QuizView 
+                  quiz={course.sections[activeLecture.sectionIdx].quizzes[activeLecture.quizIdx]} 
+                  courseId={courseId} 
+                  sectionId={course.sections[activeLecture.sectionIdx]._id} 
+                />
+              </div>
+            ) : currentLecture?.videoUrl ? (
               <>
                 {/* Loading overlay */}
                 {videoLoading && !videoError && (
@@ -331,7 +408,7 @@ export default function CourseContent() {
             ) : (
               <div className="flex flex-col items-center justify-center h-64 text-slate-500 gap-3">
                 <FiLock size={28} className="text-slate-600" />
-                <span className="text-sm font-medium">No video available for this lecture.</span>
+                <span className="text-sm font-medium">No content available for this lecture.</span>
               </div>
             )}
           </div>
@@ -570,14 +647,14 @@ export default function CourseContent() {
                     {/* Lectures */}
                     {isOpen && (
                       <div>
-                        {section.lectures.map((lecture, li) => {
-                          const isActive = activeLecture?.sectionIdx === si && activeLecture?.lectureIdx === li;
+                        {section.lectures?.map((lecture, li) => {
+                          const isActive = activeLecture?.sectionIdx === si && activeLecture?.lectureIdx === li && activeLecture?.type === 'lecture';
                           const isDone   = completed[lecture._id];
                           return (
                             <button
                               key={lecture._id}
                               onClick={() => {
-                                setActiveLecture({ sectionIdx: si, lectureIdx: li });
+                                setActiveLecture({ sectionIdx: si, lectureIdx: li, type: 'lecture' });
                                 setVideoError(false);
                                 setVideoLoading(true);
                                 setTimeout(() => {
@@ -616,6 +693,43 @@ export default function CourseContent() {
                                   {lecture.duration && (
                                     <span className="text-[11px] text-slate-600">{fmtDuration(lecture.duration)}</span>
                                   )}
+                                </div>
+                              </div>
+                            </button>
+                          );
+                        })}
+
+                        {/* Quizzes */}
+                        {section.quizzes?.map((quiz, qi) => {
+                          const isActive = activeLecture?.sectionIdx === si && activeLecture?.quizIdx === qi && activeLecture?.type === 'quiz';
+                          return (
+                            <button
+                              key={quiz._id}
+                              onClick={() => {
+                                setActiveLecture({ sectionIdx: si, quizIdx: qi, type: 'quiz' });
+                                setTimeout(() => {
+                                  if (videoWrapperRef.current) {
+                                    videoWrapperRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+                                  }
+                                }, 80);
+                              }}
+                              className={`w-full flex items-start gap-3 px-5 py-3 text-left transition ${
+                                isActive
+                                  ? "bg-amber-600/20 border-l-2 border-amber-500"
+                                  : "hover:bg-slate-800/40 border-l-2 border-transparent"
+                              }`}
+                            >
+                              <div className="mt-0.5 shrink-0">
+                                <FiFileText size={16} className={isActive ? "text-amber-400" : "text-slate-500"} />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className={`text-sm font-medium leading-snug truncate ${
+                                  isActive ? "text-amber-300" : "text-slate-300"
+                                }`}>
+                                  Quiz: {quiz.title}
+                                </p>
+                                <div className="flex items-center gap-2 mt-0.5">
+                                  <span className="text-[11px] text-slate-500">{quiz.questions?.length || 0} Questions</span>
                                 </div>
                               </div>
                             </button>

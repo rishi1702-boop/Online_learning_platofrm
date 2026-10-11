@@ -114,6 +114,26 @@ function PrivacyPolicy() {
       ],
     },
     {
+      id: "ai",
+      icon: "✨",
+      color: "cyan",
+      title: "AI & Smart Features",
+      content: [
+        {
+          subtitle: "AI-Powered Parsing & Flashcards",
+          text: "When instructors upload study materials or previous papers, we process these documents using secure AI APIs (such as Google GenAI) to generate bite-sized revision notes, flashcards, and extract core skills.",
+        },
+        {
+          subtitle: "No AI Training on Your Data",
+          text: "We ensure that your personal data and uploaded proprietary documents are strictly used for your learning experience. We do not allow third-party AI providers to use your data to train their foundational models.",
+        },
+        {
+          subtitle: "Automated Skill Profiling",
+          text: "Our enterprise-grade engine analyzes your career goals against your current skill points to dynamically build a personalized learning pipeline. This data remains strictly within your profile.",
+        }
+      ]
+    },
+    {
       id: "cookies",
       icon: "🍪",
       color: "orange",
@@ -142,6 +162,7 @@ function PrivacyPolicy() {
     emerald: { bg: "bg-emerald-100", text: "text-emerald-600", border: "border-emerald-200", activeBg: "bg-emerald-50", dot: "bg-emerald-500" },
     rose: { bg: "bg-rose-100", text: "text-rose-600", border: "border-rose-200", activeBg: "bg-rose-50", dot: "bg-rose-500" },
     orange: { bg: "bg-orange-100", text: "text-orange-600", border: "border-orange-200", activeBg: "bg-orange-50", dot: "bg-orange-500" },
+    cyan: { bg: "bg-cyan-100", text: "text-cyan-600", border: "border-cyan-200", activeBg: "bg-cyan-50", dot: "bg-cyan-500" },
   };
 
   const activeData = sections.find((s) => s.id === activeSection);

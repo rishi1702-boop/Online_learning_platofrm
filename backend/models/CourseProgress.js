@@ -18,6 +18,10 @@ const courseProgressSchema = new mongoose.Schema({
     lastAccessed: {
         type: Date,
         default: Date.now
+    },
+    lastWatchedLecture: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Course.sections.lectures"
     }
 }, { 
     timestamps: true,

@@ -1,6 +1,8 @@
 // API Base URL Configuration
-const BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-  ? "http://localhost:3000"
-  : "https://online-learning-platform-aqix.onrender.com";
+const BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ||
+  (import.meta.env.DEV
+    ? "http://localhost:3000"
+    : "https://online-learning-platform-aqix.onrender.com");
 
 export { BASE_URL };

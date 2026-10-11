@@ -275,6 +275,9 @@ function InstructorProfile() {
               {courses.map((course) => {
                 const totalLecs = course.sections?.reduce((a, s) => a + (s.lectures?.length || 0), 0) || 0;
                 const totalSecs = course.sections?.length || 0;
+                const calculatedRating = course.reviews?.length > 0
+                  ? course.reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / course.reviews.length
+                  : (course.rating || 0);
 
                 return (
                   <div
@@ -337,9 +340,9 @@ function InstructorProfile() {
 
                       {/* Rating */}
                       <div className="flex items-center gap-2 mb-4">
-                        <StarRating rating={course.rating || 0} />
+                        <StarRating rating={calculatedRating} />
                         <span className="text-xs font-bold text-amber-600">
-                          {course.rating > 0 ? course.rating.toFixed(1) : "No rating"}
+                          {calculatedRating > 0 ? calculatedRating.toFixed(1) : "No rating"}
                         </span>
                         <span className="text-xs text-slate-400">
                           ({course.reviews?.length || 0} reviews)
