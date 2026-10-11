@@ -186,11 +186,20 @@ The application incorporates a secure **dual-channel JWT authentication architec
 | Figure 4.4 | Object-Oriented Class Diagram | 42 |
 | Figure 5.1 | Three-Tier Physical Deployment Architecture | 45 |
 | Figure 6.1 | User Screen: Home Landing Page Interface | 58 |
-| Figure 6.2 | User Screen: Dedicated Startup Registration Portal | 59 |
-| Figure 6.3 | User Screen: User Registration with Startup Portal Callout | 60 |
+| Figure 6.2 | User Screen: User Registration with Startup Portal Callout | 59 |
+| Figure 6.3 | User Screen: Dedicated Startup Registration Portal | 60 |
 | Figure 6.4 | User Screen: User Authentication & Sign-In Interface | 61 |
-| Figure 6.5 | User Screen: Startup Founder Portal & Applicant Management Hub | 62 |
-| Figure 6.6 | User Screen: Cryptographic Certificate Verification Portal | 63 |
+| Figure 6.5 | User Screen: Student Dashboard & Progress Center | 62 |
+| Figure 6.6 | User Screen: Student Enrolled Courses & Study Portal | 63 |
+| Figure 6.7 | User Screen: Comprehensive Course Catalog & Filtering | 64 |
+| Figure 6.8 | User Screen: Structured Career & Learning Paths | 65 |
+| Figure 6.9 | User Screen: Startup Micro-Internships & Gig Marketplace | 66 |
+| Figure 6.10 | User Screen: Startup Founder Portal & Applicant Management Hub | 67 |
+| Figure 6.11 | User Screen: Startup Micro-Internship Opportunity Builder | 68 |
+| Figure 6.12 | User Screen: Instructor Dashboard & Course Analytics | 69 |
+| Figure 6.13 | User Screen: Instructor Curriculum & Course Creation Interface | 70 |
+| Figure 6.14 | User Screen: Instructor Course Management & Publishing Center | 71 |
+| Figure 6.15 | User Screen: Cryptographic Certificate Verification Portal | 72 |
 
 ---
 
@@ -1196,93 +1205,218 @@ The primary entry point welcomes prospective learners, instructors, and corporat
 **Figure 6.1: Home Landing Page Interface**
 
 - **Key Fields & Components:**
-  - Dynamic Top Navigation Bar: Dynamic routing links (`/all-courses`, `/learning-paths`, `/login`, `/register`, `/register-startup`).
-  - Hero Call-to-Action Group: "Explore courses" and "View learning paths" primary buttons.
-  - Social Proof Counter: Displays "50K+ learners", "1,200+ classes", and "4.8 average rating".
-  - Floating AI Mentor Trigger: Fixed position bottom-right button providing instant academic tutoring via Google Gemini.
+  - **Dynamic Top Navigation Bar:** Routing links (`/all-courses`, `/learning-paths`, `/login`, `/register`, `/register-startup`).
+  - **Hero Call-to-Action Group:** "Explore courses" and "View learning paths" primary buttons.
+  - **Social Proof Counter:** Displays "50K+ learners", "1,200+ classes", and "4.8 average rating".
+  - **Floating AI Mentor Trigger:** Fixed position bottom-right button providing instant academic tutoring via Google Gemini.
 
 ---
 
-### 6.2 Screen 2: Dedicated Startup Registration Portal
-Addressing the specific requirement for segregated corporate onboarding, this dedicated interface (`/register-startup`) collects organizational identity parameters required to vet hiring entities before they post paid opportunities.
-
-![Figure 6.2: Dedicated Startup Registration Portal](docs_screenshots/screen_register_startup.png)
-<br>
-**Figure 6.2: Dedicated Startup Registration Portal**
-
-- **Key Fields & Components:**
-  - **Left Value Proposition Panel:** Highlights the core student benefits: *Zero Corporate Bonds*, *Affordable Production Cost*, and *Instant Broadcast Alerts*.
-  - **Company / Startup Name Input:** Captures the legal business entity name (e.g., *TechSpark Labs, FinFlow*).
-  - **Founder / Lead First & Last Name:** Personal identity fields for the account administrator.
-  - **Official Work / Founder Email:** Corporate email address enforced by regular expression validation.
-  - **Password Input:** Secure field with minimum 6-character constraint and show/hide password toggle.
-  - **Established Year Input:** Numerical year field restricted between 1950 and the current calendar year.
-  - **Number of Employees Dropdown:** Segregates startup stage (`1-10 Early Stage`, `11-50 Seed / Growth`, `51-200 Expansion`, `200+ Scaleup / Enterprise`).
-  - **Headquarters / Location Input:** Captures corporate base (e.g., *Bengaluru, India or Remote*).
-  - **Company Website Input:** Optional URL field capturing corporate portfolio or landing page.
-  - **Submission Action:** "Register Startup Account &rarr;" button dispatching `POST /common-api/register-startup`.
-
----
-
-### 6.3 Screen 3: User Registration with Startup Portal Callout
+### 6.2 Screen 2: User Registration with Startup Portal Callout
 The standard registration page (`/register`) caters to students, instructors, and platform administrators. To prevent confusion, it features an eye-catching emerald callout directing corporate founders to the dedicated startup onboarding workflow.
 
-![Figure 6.3: User Registration with Startup Portal Callout](docs_screenshots/screen_register.png)
+![Figure 6.2: User Registration with Startup Portal Callout](docs_screenshots/screen_register.png)
 <br>
-**Figure 6.3: User Registration with Startup Portal Callout**
+**Figure 6.2: User Registration with Startup Portal Callout**
 
 - **Key Fields & Components:**
   - **Startup Gateway Banner:** "Registering as a Startup? Startups have a separate registration with company name, founded year, location & team size." with a direct button leading to `/register-startup`.
   - **Name Inputs:** First Name and Last Name inputs with iconography.
   - **Email & Password Fields:** Interactive password strength meter evaluating uppercase and numeric complexity.
   - **Role Selection Radio Cards:** Learn (Student), Teach (Instructor), Admin.
-  - **Adaptive Right Visual:** Dynamically alters value benefits based on the selected role tab.
+
+---
+
+### 6.3 Screen 3: Dedicated Startup Registration Portal
+Addressing the specific requirement for segregated corporate onboarding, this dedicated interface (`/register-startup`) collects organizational identity parameters required to vet hiring entities before they post paid opportunities.
+
+![Figure 6.3: Dedicated Startup Registration Portal](docs_screenshots/screen_register_startup.png)
+<br>
+**Figure 6.3: Dedicated Startup Registration Portal**
+
+- **Key Fields & Components:**
+  - **Left Value Proposition Panel:** Highlights core student benefits: *Zero Corporate Bonds*, *Affordable Production Cost*, and *Instant Broadcast Alerts*.
+  - **Company / Startup Name Input:** Captures legal business entity name (e.g., *vip, TechSpark Labs*).
+  - **Founder / Lead First & Last Name:** Personal identity fields for the account administrator.
+  - **Official Work Email:** Corporate email address enforced by regular expression validation.
+  - **Password Input:** Secure field with minimum 6-character constraint and show/hide password toggle.
+  - **Established Year Input:** Numerical year field restricted between 1950 and the current calendar year.
+  - **Number of Employees Dropdown:** Segregates startup stage (`1-10 Early Stage`, `11-50 Seed / Growth`, `51-200 Expansion`, `200+ Scaleup`).
+  - **Headquarters / Location Input:** Captures corporate base (e.g., *Bengaluru, India or Remote*).
+  - **Submission Action:** "Register Startup Account &rarr;" button dispatching `POST /common-api/register-startup`.
 
 ---
 
 ### 6.4 Screen 4: User Authentication & Sign-In Interface
-The login interface (`/login`) provides secure access across all four platform roles. After verifying credentials against bcrypt hashes, the backend returns a signed JWT and user metadata, redirecting students to `/student-dashboard`, instructors to `/instructor-dashboard`, startups to `/startup-dashboard`, and admins to `/admin-dashboard`.
+The login interface (`/login`) provides secure access across all four platform roles. After verifying credentials against bcrypt hashes, the backend returns a signed JWT and user metadata, redirecting users according to their respective role.
 
 ![Figure 6.4: User Authentication & Sign-In Interface](docs_screenshots/screen_login.png)
 <br>
 **Figure 6.4: User Authentication & Sign-In Interface**
 
 - **Key Fields & Components:**
-  - **Email Address & Password Fields:** Auto-focus inputs with error feedback.
-  - **Sign In Button:** Features an asynchronous spinner and disables repeated clicks during API round-trips.
+  - **Email Address & Password Fields:** Auto-focus inputs with validation and error feedback.
+  - **Sign In Button:** Features asynchronous progress feedback and prevents duplicate submissions.
   - **Alternative Navigation:** Direct link for startups: *"Hiring as a startup? Register your Startup &rarr;"*.
-  - **Right Testimonial Card:** Highlights verified student community ratings (5.0 stars with 10k+ learners).
+  - **Testimonial Showcase:** Highlights verified learner community ratings.
 
 ---
 
-### 6.5 Screen 5: Startup Founder Portal & Applicant Management Hub
-Once authenticated, startup founders land directly in the Startup Dashboard (`/startup-dashboard`). This portal acts as a central command center for tracking posted roles, managing candidate submissions, reviewing resumes, and making hiring decisions.
+### 6.5 Screen 5: Student Dashboard & Academic Progress Center
+Upon logging in with student credentials (`rk@gmail.com`), learners are greeted with a personalized learning command center displaying current enrolled course metrics, streak indicators, and continue-learning modules.
 
-![Figure 6.5: Startup Founder Portal & Applicant Management Hub](docs_screenshots/screen_startup_dashboard.png)
+![Figure 6.5: Student Dashboard & Progress Center](docs_screenshots/screen_student_dashboard.png)
 <br>
-**Figure 6.5: Startup Founder Portal & Applicant Management Hub**
+**Figure 6.5: Student Dashboard & Progress Center**
 
 - **Key Fields & Components:**
-  - **Top Banner:** "Startup Talent & Micro-Internship Engine — Empower motivated student learners to convert real skills into production work. Hire without corporate MNC red tape, zero bonds, and affordable milestone stipends."
-  - **Action Button:** "+ Post New Internship / Mini-Task" navigating to the opportunity builder.
-  - **Real-Time KPI Metric Cards:** Active Roles, Total Applicants, Hired / Accepted candidates, and Under Review count.
-  - **Dual Navigation Tabs:** Toggle between *Candidate Applications* and *My Posted Roles*.
-  - **Search & Filtering:** Real-time search bar to filter applicants by candidate name, required skill, or job role.
-  - **Top Navigation Bar:** Persistent header displaying "Startup Portal", "+ Post Internship", real-time notification bell, and user avatar badge.
+  - **Personalized Header Banner:** "Welcome back, rishi kanth 👋" with dynamic day-streak badge and enrolled course summary counters.
+  - **Quick Metric Cards:** Enrolled courses count (3), Available catalog courses (16), and Active in-progress modules (3).
+  - **Continue Learning Carousel:** Interactive cards for enrolled courses with direct resume playback triggers.
+  - **AI Chatbot Bubble:** Bottom-right floating icon launching instant tutoring sessions.
 
 ---
 
-### 6.6 Screen 6: Cryptographic Certificate Verification Portal
-To ensure credential integrity and eliminate resume fraud, CourseHub provides a public verification route (`/verify-certificate`). Anyone (recruiters, academic institutions, employers) can verify the bonafide completion of a course by entering the certificate identifier or scanning the QR code embedded on the certificate.
+### 6.6 Screen 6: Student Enrolled Courses & Study Portal
+Accessible via `/my-courses`, this interface displays all curricular modules currently enrolled by the authenticated student.
 
-![Figure 6.6: Cryptographic Certificate Verification Portal](docs_screenshots/screen_verify_certificate.png)
+![Figure 6.6: Student Enrolled Courses & Study Portal](docs_screenshots/screen_my_courses.png)
 <br>
-**Figure 6.6: Cryptographic Certificate Verification Portal**
+**Figure 6.6: Student Enrolled Courses & Study Portal**
 
 - **Key Fields & Components:**
-  - **Certificate ID Search Field:** Allows manual entry of the unique alphanumeric cryptographic hash.
+  - **Course Progress Gauges:** Percentage completion bars for individual lecture modules.
+  - **Course Action Buttons:** "Continue Learning", "Course Details", and "Take Assessment".
+  - **Search & Filter Controls:** Allows students to filter courses by subject, completion status, or instructor.
+
+---
+
+### 6.7 Screen 7: Comprehensive Course Catalog & Filtering
+The course catalog (`/all-courses`) displays all published educational programs across cloud computing, machine learning, web engineering, and data science.
+
+![Figure 6.7: Comprehensive Course Catalog & Filtering](docs_screenshots/screen_all_courses.png)
+<br>
+**Figure 6.7: Comprehensive Course Catalog & Filtering**
+
+- **Key Fields & Components:**
+  - **Search Bar:** Real-time query matching against titles, tags, and instructor names.
+  - **Category Pills:** Rapid selection across technical domains (Full-Stack, Cloud, AI/ML, DevOps).
+  - **Pricing & Rating Badges:** Transparent pricing, duration hours, and star review scores.
+
+---
+
+### 6.8 Screen 8: Structured Career & Learning Paths
+The `/learning-paths` screen guides students through curated multi-course career roadmaps designed to take learners from beginner fundamentals to industry-ready engineering proficiency.
+
+![Figure 6.8: Structured Career & Learning Paths](docs_screenshots/screen_learning_paths.png)
+<br>
+**Figure 6.8: Structured Career & Learning Paths**
+
+- **Key Fields & Components:**
+  - **Track Roadmap Visualizer:** Step-by-step milestones (e.g., Frontend Specialist, Cloud Architect, AI Engineer).
+  - **Target Roles & Salary Ranges:** Estimated industry compensation and prerequisites.
+  - **Enroll in Path Trigger:** One-click enrollment into grouped curricular bundles.
+
+---
+
+### 6.9 Screen 9: Startup Micro-Internships & Gig Marketplace
+The `/jobs` portal represents the platform's core economic innovation: a "Skill-to-Earn" marketplace connecting verified learners directly to emerging startups for paid mini-tasks and micro-internships without corporate MNC filtration or bonds.
+
+![Figure 6.9: Startup Micro-Internships & Gig Marketplace](docs_screenshots/screen_jobs.png)
+<br>
+**Figure 6.9: Startup Micro-Internships & Gig Marketplace**
+
+- **Key Fields & Components:**
+  - **Category Tabs:** Filter between *Startup Internships & Mini-Tasks*, *Full-Time Jobs*, and *My Applications*.
+  - **Opportunity Cards:** Displays company badge, job title, location mode (Remote/Hybrid), stipend/compensation, and required tech stack tags.
+  - **Application Status Indicator:** Live status badges (e.g., `Applied (PENDING)` or `ACCEPTED`).
+  - **View Details & Apply Button:** Opens detailed scope description and direct submission modal.
+
+---
+
+### 6.10 Screen 10: Startup Founder Portal & Applicant Management Hub
+Authenticated startup founders (`vip@gmail.com`) manage their recruitment pipeline through `/startup-dashboard`. Founders can post new opportunities, review applicants, evaluate notes, and accept candidates.
+
+![Figure 6.10: Startup Founder Portal & Applicant Management Hub](docs_screenshots/screen_startup_dashboard.png)
+<br>
+**Figure 6.10: Startup Founder Portal & Applicant Management Hub**
+
+- **Key Fields & Components:**
+  - **KPI Metric Dashboard:** Real-time counters for Active Roles, Total Applicants, Hired / Accepted candidates, and Under Review.
+  - **Candidate Applications List:** Candidate cards showing student name, contact info, applied role, and current hiring status (e.g., student `rishi kanth` marked `ACCEPTED`).
+  - **Hiring Action Buttons:** Quick action triggers: "Accept & Hire", "Shortlist", and "Note".
+  - **Primary CTA:** "+ Post New Internship / Mini-Task" button in header and banner.
+
+---
+
+### 6.11 Screen 11: Startup Micro-Internship Opportunity Builder
+Located at `/startup/post-internship`, this form allows founders to author and broadcast paid opportunities to learners within minutes.
+
+![Figure 6.11: Startup Micro-Internship Opportunity Builder](docs_screenshots/screen_post_internship.png)
+<br>
+**Figure 6.11: Startup Micro-Internship Opportunity Builder**
+
+- **Key Fields & Components:**
+  - **Role Title & Domain:** Text input capturing specific role title (e.g., React Developer, AI Integrator).
+  - **Compensation / Stipend Range:** Stipend fields specifying monthly or milestone payout.
+  - **Work Mode & Duration:** Select dropdowns for Remote, On-Site, Hybrid, and duration weeks.
+  - **Required Skills & Scope Description:** Rich text area detailing project deliverables.
+
+---
+
+### 6.12 Screen 12: Instructor Dashboard & Course Analytics
+Educators logging in via instructor credentials (`pr@gmail.com`) access `/instructor-dashboard`, providing revenue analytics, student enrollment tallies, and course performance reviews.
+
+![Figure 6.12: Instructor Dashboard & Course Analytics](docs_screenshots/screen_instructor_dashboard.png)
+<br>
+**Figure 6.12: Instructor Dashboard & Course Analytics**
+
+- **Key Fields & Components:**
+  - **KPI Metric Strip:** Total Students, Total Revenue (₹), Active Courses, and Average Rating.
+  - **Top Performing Course Spotlight:** Featured card showing enrolled metrics and analytics link.
+  - **Quick Action Bar:** Fast shortcuts to "+ Create New Course", "Manage My Courses", and "Edit Profile".
+
+---
+
+### 6.13 Screen 13: Instructor Curriculum & Course Creation Interface
+At `/create-course`, instructors construct multimedia learning programs, upload video lectures to Cloudinary, design curricula, and set assessment parameters.
+
+![Figure 6.13: Instructor Curriculum & Course Creation Interface](docs_screenshots/screen_create_course.png)
+<br>
+**Figure 6.13: Instructor Curriculum & Course Creation Interface**
+
+- **Key Fields & Components:**
+  - **Course Metadata Editor:** Course title, category, target difficulty level, and description.
+  - **Pricing & Publishing Controls:** Free vs Paid toggle and course fee inputs.
+  - **Section & Lesson Builder:** Drag-and-drop modular syllabus organization.
+
+---
+
+### 6.14 Screen 14: Instructor Course Management & Publishing Center
+The `/instructor-my-courses` page allows educators to manage their published educational catalog, inspect individual student completion rates, and trigger content updates.
+
+![Figure 6.14: Instructor Course Management & Publishing Center](docs_screenshots/screen_instructor_courses.png)
+<br>
+**Figure 6.14: Instructor Course Management & Publishing Center**
+
+- **Key Fields & Components:**
+  - **Course Inventory Table:** Tabular listing of active, draft, and archived courses.
+  - **Status Pills:** Live status indicators reflecting moderation and availability state.
+  - **Management Actions:** Edit syllabus, view analytics, and update pricing.
+
+---
+
+### 6.15 Screen 15: Cryptographic Certificate Verification Portal
+CourseHub provides a tamper-proof verification portal (`/verify-certificate`) enabling recruiters, academic institutions, and employers to confirm credential legitimacy using certificate hash IDs or QR codes.
+
+![Figure 6.15: Cryptographic Certificate Verification Portal](docs_screenshots/screen_verify_certificate.png)
+<br>
+**Figure 6.15: Cryptographic Certificate Verification Portal**
+
+- **Key Fields & Components:**
+  - **Certificate ID Search Field:** Allows manual entry of alphanumeric verification hash.
   - **Verify Certificate Button:** Dispatches validation request to `/common-api/verify-certificate/:id`.
-  - **Tamper-Proof Verification Card:** Renders student name, course title, completion date, verification status badge, and official issuer seal upon successful lookup.
+  - **Verification Card:** Displays student name, course title, issuance date, and official seal upon successful validation.
 
 ---
 
