@@ -1,40 +1,51 @@
-# B.TECH PROJECT DOCUMENTATION REPORT
+# ONLINE LEARNING PLATFORM WITH AI MENTORSHIP AND STARTUP MICRO-INTERNSHIPS (COURSEHUB)
 
----
+<div align="center">
 
-```
-                       A Project Report on
-       ONLINE LEARNING PLATFORM WITH AI MENTORSHIP
-          AND STARTUP MICRO-INTERNSHIPS (COURSEHUB)
+### A Project Report on
+# ONLINE LEARNING PLATFORM WITH AI MENTORSHIP AND STARTUP MICRO-INTERNSHIPS (COURSEHUB)
 
-              BACHELOR OF TECHNOLOGY
-                         IN
-               INFORMATION TECHNOLOGY
+Submitted in partial fulfillment of the requirements for the award of the degree of  
+**BACHELOR OF TECHNOLOGY**  
+**IN**  
+**INFORMATION TECHNOLOGY**
 
-                     Submitted By
-              VADDIGALLA RISHIKANTH
-                   (24EG512A04)
+<br>
 
-               Under the Guidance of
-                 G. SEKHAR REDDY
-               Assistant Professor
+*Submitted By*  
+**VADDIGALLA RISHIKANTH**  
+**(HT No: 24EG512A04)**
 
-      DEPARTMENT OF INFORMATION TECHNOLOGY
-                ANURAG UNIVERSITY
- (Formerly Anurag Group of Institutions / CVSR College of Engineering)
-    (Approved by AICTE and NBA & NAAC Accredited 'A+' Grade)
-Venkatapur (V), Ghatkesar (M), Medchal District, Hyderabad, Telangana – 500088
+<br>
 
-                     2023 – 2027
-```
+*Under the Esteemed Guidance of*  
+**Mr. G. SEKHAR REDDY**  
+Assistant Professor, Dept. of Information Technology
 
----
+<br><br>
+
+<img src="docs_screenshots/anurag_university_logo.png" alt="Anurag University Logo" width="300" />
+
+<br>
+
+**DEPARTMENT OF INFORMATION TECHNOLOGY**  
+**ANURAG UNIVERSITY**  
+(Formerly Anurag Group of Institutions / CVSR College of Engineering)  
+(Approved by AICTE and NBA & NAAC Accredited 'A+' Grade)  
+Venkatapur (V), Ghatkesar (M), Medchal-Malkajgiri District, Hyderabad, Telangana – 500088  
+**2023 – 2027**
+
+</div>
 
 <div style="page-break-after: always;"></div>
+
+<div align="center">
+<img src="docs_screenshots/anurag_university_logo.png" alt="Anurag University Logo" width="240" />
 
 # ANURAG UNIVERSITY
 ### Department of Information Technology
 **Venkatapur (V), Ghatkesar (M), Medchal-Malkajgiri District, Hyderabad – 500088**
+</div>
 
 ---
 
@@ -704,6 +715,29 @@ stateDiagram-v2
 
 <div style="page-break-after: always;"></div>
 
+#### Activity 4: AI Mentorship & Assessment Workflow
+
+```mermaid
+stateDiagram-v2
+    [*] --> StudentEncountersDoubt
+    StudentEncountersDoubt --> LaunchAITutorModal : Click Floating AI Bubble
+    LaunchAITutorModal --> EnterAcademicPrompt
+    EnterAcademicPrompt --> StreamToGeminiAPI : Transmit Context & Query
+    StreamToGeminiAPI --> GenerateContextualExplanation : Gemini LLM Inference
+    GenerateContextualExplanation --> DisplayToStudent
+    DisplayToStudent --> TakeChapterQuiz : Reinforce Concept
+    TakeChapterQuiz --> EvaluateScore
+    EvaluateScore --> UnlockNextLecture : Score >= 80%
+    EvaluateScore --> RePromptAITutor : Score < 80%
+    RePromptAITutor --> LaunchAITutorModal
+    UnlockNextLecture --> [*]
+```
+**Figure 3.5: Activity Diagram for AI Mentorship & Assessment**
+
+---
+
+<div style="page-break-after: always;"></div>
+
 # CHAPTER 4
 # DESIGN
 
@@ -1010,24 +1044,15 @@ classDiagram
 
 ## 5.1 Architecture & Tech Stack Integration
 
-CourseHub is deployed using a decoupled, cloud-native three-tier topology:
+CourseHub is deployed using a decoupled, cloud-native three-tier topology comprising Presentation Layer (React.js on Vercel), Application Layer (Node.js & Express on Render), Data Layer (MongoDB Atlas), and External Media/AI Microservices (Cloudinary & Google Gemini).
 
-```
-[ User Browser / Client ] 
-        │
-        ▼ (HTTPS)
-[ Vercel CDN Edge Network ] ──> Serves React 19 SPA (Vite Production Bundle)
-        │
-        ▼ (REST API / JSON with Bearer Token & Cookies)
-[ Render Cloud Web Service ] ──> Express.js 5 / Node.js Engine
-        │
-        ├───> [ MongoDB Atlas ] (Persistent Data Storage & Sharding)
-        ├───> [ Cloudinary CDN ] (Video Lecture Streaming & Image Uploads)
-        └───> [ Google Gemini API ] (Generative AI Tutoring & Assessment Engine)
-```
-**Figure 5.1: Three-Tier Physical Deployment Architecture**
+![Figure 5.1: System Architecture of the Online Learning Platform](docs_screenshots/system_architecture_diagram.png)
+<br>
+**Figure 5.1: System Architecture of the Online Learning Platform**
 
 ---
+
+<div style="page-break-after: always;"></div>
 
 ## 5.2 Backend API Implementation
 
