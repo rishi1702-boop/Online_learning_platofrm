@@ -1260,15 +1260,10 @@ Addressing the specific requirement for segregated corporate onboarding, this de
 **Figure 6.3: Dedicated Startup Registration Portal**
 
 - **Key Fields & Components:**
-  - **Left Value Proposition Panel:** Highlights core student benefits: *Zero Corporate Bonds*, *Affordable Production Cost*, and *Instant Broadcast Alerts*.
-  - **Company / Startup Name Input:** Captures legal business entity name (e.g., *vip, TechSpark Labs*).
-  - **Founder / Lead First & Last Name:** Personal identity fields for the account administrator.
-  - **Official Work Email:** Corporate email address enforced by regular expression validation.
-  - **Password Input:** Secure field with minimum 6-character constraint and show/hide password toggle.
-  - **Established Year Input:** Numerical year field restricted between 1950 and the current calendar year.
-  - **Number of Employees Dropdown:** Segregates startup stage (`1-10 Early Stage`, `11-50 Seed / Growth`, `51-200 Expansion`, `200+ Scaleup`).
-  - **Headquarters / Location Input:** Captures corporate base (e.g., *Bengaluru, India or Remote*).
-  - **Submission Action:** "Register Startup Account &rarr;" button dispatching `POST /common-api/register-startup`.
+  - **Company Identity & Branding:** Captures legal business entity name (e.g., *vip, TechSpark Labs*) and value proposition overview.
+  - **Founder & Executive Credentials:** Founder first & last name, verified work email, and secured password input.
+  - **Corporate Demographics:** Established year (1950 to current) and employee size tier dropdown (`1-10 Early Stage`, `11-50 Growth`, `51-200 Expansion`).
+  - **Headquarters & Submission:** Geographic headquarters input and "Register Startup Account &rarr;" submission trigger.
 
 ---
 
@@ -1432,16 +1427,16 @@ The `/instructor-my-courses` page allows educators to manage their published edu
 ---
 
 ### 6.15 Screen 15: Cryptographic Certificate Verification Portal
-CourseHub provides a tamper-proof verification portal (`/verify-certificate`) enabling recruiters, academic institutions, and employers to confirm credential legitimacy using certificate hash IDs or QR codes.
+CourseHub provides an authentic tamper-proof verification interface (`/verify-certificate?id=...`) displaying the verified digital Certificate of Completion. Recruiters, academic institutions, and employers confirm credential legitimacy with live database validation, inspecting the recipient identity, completed course curriculum, cryptographic certificate hash, and dynamic QR code.
 
 ![Figure 6.15: Cryptographic Certificate Verification Portal](docs_screenshots/screen_verify_certificate.png)
 <br>
 **Figure 6.15: Cryptographic Certificate Verification Portal**
 
 - **Key Fields & Components:**
-  - **Certificate ID Search Field:** Allows manual entry of alphanumeric verification hash.
-  - **Verify Certificate Button:** Dispatches validation request to `/common-api/verify-certificate/:id`.
-  - **Verification Card:** Displays student name, course title, issuance date, and official seal upon successful validation.
+  - **Verification Status Badge:** "Certificate Verified - This is an official CourseHub certificate" emerald confirmation banner.
+  - **Action Controls:** "Download as PDF" and "Back to Dashboard" navigation triggers.
+  - **Verified Certificate Details:** Displays recipient name (*rishi kanth*), course program (*Python for Data Science & Machine Learning*), issuance date (*October 11, 2026*), unique certificate hash (`e46fcb6f-9288-40f8-a77e-1d19e3c7a0f6`), scannable QR code, and authorized corporate seal.
 
 ---
 
